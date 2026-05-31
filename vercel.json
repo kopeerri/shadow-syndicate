@@ -5,5 +5,13 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/games/:game", "destination": "/games/:game.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'; connect-src *; img-src * data:" }
+      ]
+    }
   ]
 }
