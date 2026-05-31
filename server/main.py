@@ -5,7 +5,7 @@ $SHADE-native casino. Provably fair RNG: Blackjack, Dice, Mines.
 Cardano wallet integration via Blockfrost. Real $SHADE deposits.
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -130,6 +130,16 @@ class PlayerSession:
         }
 
 sessions: dict[str, PlayerSession] = {}
+operator_tokens: set[str] = set()
+
+def require_operator(authorization: str = Header(default=""), x_operator_token: str = Header(default="")):
+    """Require a short-lived operator session token for sensitive operator APIs."""
+    token = x_operator_token.strip()
+    if authorization.lower().startswith("bearer "):
+        token = authorization.split(" ", 1)[1].strip()
+    if not token or token not in operator_tokens:
+        raise HTTPException(401, "Operator authentication required")
+    return True
 
 def get_session(wallet_address: str) -> PlayerSession:
     addr = normalize_address(wallet_address)
@@ -220,6 +230,20 @@ class MarkSentRequest(BaseModel):
     withdrawal_id: str
     tx_hash: str = ""
 
+class OperatorLoginRequest(BaseModel):
+    password: str
+
+@app.post("/operator/login")
+def operator_login(req: OperatorLoginRequest):
+    password = os.getenv("OPERATOR_PASSWORD", "")
+    if not password:
+        raise HTTPException(503, "Operator auth is not configured")
+    if not hmac.compare_digest(req.password, password):
+        raise HTTPException(401, "Invalid password")
+    token = secrets.token_urlsafe(32)
+    operator_tokens.add(token)
+    return {"token": token}
+
 @app.post("/withdraw/request")
 def withdraw_request(req: WithdrawRequest):
     """Request a withdrawal. Deducts balance, creates pending record for operator to send manually."""
@@ -236,11 +260,11 @@ def withdraw_history(wallet_address: str):
     }
 
 @app.get("/withdraw/pending")
-def withdraw_pending():
+def withdraw_pending(_: bool = Depends(require_operator)):
     return {"pending": get_pending_withdrawals()}
 
 @app.post("/withdraw/mark-sent")
-def withdraw_mark_sent(req: MarkSentRequest):
+def withdraw_mark_sent(req: MarkSentRequest, _: bool = Depends(require_operator)):
     result = mark_withdrawal_sent(req.withdrawal_id, req.tx_hash)
     if "error" in result:
         raise HTTPException(400, result["error"])

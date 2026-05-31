@@ -50,7 +50,7 @@
     <div class="gate" id="gate">
         <h1 class="gate__title">Operator Access</h1>
         <p class="gate__sub">Enter operator password to continue.</p>
-        <input type="password" class="gate__input" id="pwdInput" placeholder="········" maxlength="32" autofocus>
+        <input type="password" class="gate__input" id="pwdInput" placeholder="········" maxlength="128" autofocus>
         <div class="gate__error" id="gateError"></div>
         <button class="gate__btn" id="gateBtn">Unlock</button>
     </div>
@@ -99,28 +99,48 @@
 
     <script src="scripts/config.js"></script>
     <script>
-        // Password gate — change this to your own password
-        const OP_PASSWORD = 'nE1^jy#cUH5czuYHDX^L';
-
         const API_URL = SYNDICATE_API + '';
         let _unlocked = false;
+        let _operatorToken = sessionStorage.getItem('shadowSyndicate_operatorToken') || '';
 
         // Gate logic
         document.getElementById('gateBtn').addEventListener('click', unlock);
         document.getElementById('pwdInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
 
-        function unlock() {
+        function authHeaders(extra = {}) {
+            return {
+                ...extra,
+                'ngrok-skip-browser-warning': '1',
+                ...( _operatorToken ? { 'Authorization': `Bearer ${_operatorToken}` } : {} ),
+            };
+        }
+
+        async function unlock() {
             const pwd = document.getElementById('pwdInput').value;
-            if (pwd === OP_PASSWORD) {
+            const btn = document.getElementById('gateBtn');
+            btn.disabled = true;
+            document.getElementById('gateError').textContent = 'Checking...';
+            try {
+                const r = await fetch(`${API_URL}/operator/login`, {
+                    method: 'POST',
+                    headers: authHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify({ password: pwd }),
+                });
+                if (!r.ok) throw new Error('Invalid password');
+                const d = await r.json();
+                _operatorToken = d.token || '';
+                sessionStorage.setItem('shadowSyndicate_operatorToken', _operatorToken);
                 _unlocked = true;
                 document.getElementById('gate').classList.add('gate--hidden');
                 document.getElementById('mainContent').style.display = 'block';
                 loadAll();
                 setInterval(loadPending, 15000);
-            } else {
-                document.getElementById('gateError').textContent = 'Invalid password';
+            } catch (e) {
+                document.getElementById('gateError').textContent = e.message || 'Invalid password';
                 document.getElementById('pwdInput').value = '';
                 document.getElementById('pwdInput').focus();
+            } finally {
+                btn.disabled = false;
             }
         }
 
@@ -146,7 +166,16 @@
 
         async function loadPending() {
             try {
-                const r = await fetch(`${API_URL}/withdraw/pending`, { headers: { 'ngrok-skip-browser-warning': '1' } });
+                const r = await fetch(`${API_URL}/withdraw/pending`, { headers: authHeaders() });
+                if (r.status === 401) {
+                    sessionStorage.removeItem('shadowSyndicate_operatorToken');
+                    _operatorToken = '';
+                    _unlocked = false;
+                    document.getElementById('gate').classList.remove('gate--hidden');
+                    document.getElementById('mainContent').style.display = 'none';
+                    document.getElementById('gateError').textContent = 'Session expired. Re-enter password.';
+                    return;
+                }
                 const d = await r.json();
                 const el = document.getElementById('pendingList');
                 if (!d.pending?.length) {
@@ -182,7 +211,7 @@
             try {
                 const r = await fetch(`${API_URL}/withdraw/mark-sent`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+                    headers: authHeaders({ 'Content-Type': 'application/json' }),
                     body: JSON.stringify({withdrawal_id: wid, tx_hash: txHash}),
                 });
                 if (r.ok) {
@@ -198,6 +227,15 @@
         function loadAll() { loadCasinoInfo(); loadPending(); }
 
         document.getElementById('refreshBtn').addEventListener('click', loadAll);
+
+        if (_operatorToken) {
+            _unlocked = true;
+            document.getElementById('gate').classList.add('gate--hidden');
+            document.getElementById('mainContent').style.display = 'block';
+            loadAll();
+            setInterval(loadPending, 15000);
+        }
     </script>
 </body>
 </html>
+
