@@ -497,7 +497,7 @@ class WalletManager {
     const addr = this.address;
     fetch(`${API.baseURL}/balance/sync`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
       body: JSON.stringify({ wallet_address: addr, delta: delta }),
       keepalive: true,
     }).catch(e => {});

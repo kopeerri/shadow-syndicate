@@ -81,7 +81,7 @@ const DepositModal = (() => {
 
   async function load() {
     try {
-      const r = await fetch(`${API_URL}/deposit/info`);
+      const r = await fetch(`${API_URL}/deposit/info`, {headers: {'ngrok-skip-browser-warning': '1'}});
       _info = await r.json();
       document.getElementById('dmAddr').textContent =
         _info.casino_wallet || 'Not configured';
@@ -100,7 +100,7 @@ const DepositModal = (() => {
     const bal = document.getElementById('dmBalance');
     st.innerHTML = '<span>⏳ Scanning blockchain...</span>';
     try {
-      const r = await fetch(`${API_URL}/deposit/verify/${encodeURIComponent(a)}`);
+      const r = await fetch(`${API_URL}/deposit/verify/${encodeURIComponent(a)}`, {headers: {'ngrok-skip-browser-warning': '1'}});
       const d = await r.json();
       if (d.new_deposits?.length > 0) {
         const total = d.new_deposits.reduce((s, x) => s + x.shade_amount, 0);
@@ -124,7 +124,7 @@ const DepositModal = (() => {
     const a = waddr();
     if (a) {
       try {
-        const r = await fetch(`${API_URL}/session/${encodeURIComponent(a)}`);
+        const r = await fetch(`${API_URL}/session/${encodeURIComponent(a)}`, {headers: {'ngrok-skip-browser-warning': '1'}});
         const d = await r.json();
         document.getElementById('dmBalance').textContent =
           `Casino balance: ${d.balance_shade || '0'} $SHADE`;

@@ -58,7 +58,7 @@ class Dashboard {
             return;
         }
         try {
-            const r = await fetch(`${SYNDICATE_API}/deposit/history/${encodeURIComponent(wallet.address)}`);
+            const r = await fetch(`${SYNDICATE_API}/deposit/history/${encodeURIComponent(wallet.address)}`, {headers: {'ngrok-skip-browser-warning': '1'}});
             const d = await r.json();
             // Filter to real blockchain deposits only (exclude game_ and demo_ records)
             const realDeposits = (d.deposits || []).filter(dep =>

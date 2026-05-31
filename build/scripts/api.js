@@ -12,7 +12,7 @@ class SyndicateAPI {
     async _post(path, body) {
         const res = await fetch(`${this.baseURL}${path}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
             body: JSON.stringify({ ...body, wallet_address: this.walletAddress }),
         });
         if (!res.ok) {
@@ -23,7 +23,9 @@ class SyndicateAPI {
     }
 
     async _get(path) {
-        const res = await fetch(`${this.baseURL}${path}`);
+        const res = await fetch(`${this.baseURL}${path}`, {
+            headers: { 'ngrok-skip-browser-warning': '1' },
+        });
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         return res.json();
     }
