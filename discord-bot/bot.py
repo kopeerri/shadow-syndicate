@@ -1089,6 +1089,23 @@ async def ping(interaction: discord.Interaction):
     )
 
 
+@bot.tree.command(name="post-verify", description="[Admin] Re-post the verification message in this channel.")
+@app_commands.default_permissions(manage_guild=True)
+async def post_verify(interaction: discord.Interaction):
+    """Re-post the verification button without purging the server."""
+    embed = discord.Embed(
+        title="⬡ NODE ZERO VERIFICATION",
+        description="Welcome to the Shadow Syndicate. Click below to verify and gain full server access.",
+        color=discord.Color.from_rgb(45, 212, 191),
+    )
+    embed.add_field(name="Step 1", value="Click **Establish Uplink** below.", inline=False)
+    embed.add_field(name="Step 2", value="Read and accept the Syndicate Charter.", inline=False)
+    embed.add_field(name="Step 3", value="You'll be promoted to Operative — full access granted.", inline=False)
+    embed.set_footer(text="The Shadow Syndicate · Node Zero")
+    await interaction.channel.send(embed=embed, view=VerifyView())
+    await interaction.response.send_message("✅ Verification message posted in this channel.", ephemeral=True)
+
+
 @bot.tree.command(name="status", description="[Council] Set the bot's status.")
 @app_commands.default_permissions(administrator=True)
 async def set_status(interaction: discord.Interaction, text: str):
