@@ -86,24 +86,49 @@ class WalletManager {
       }
     }
 
-    // Load saved state and reconnect silently
+    // Load saved state without forcing a CIP-30 enable() prompt on every page.
+    // We only need the address to show casino balance and verify deposits; signing is not used.
     const saved = localStorage.getItem('shadowSyndicate_wallet');
     if (saved) {
-      const data = JSON.parse(saved);
-      if (data.connected && data.walletName) {
-        // Show reconnecting state
-        const status = document.getElementById('connectionStatus');
-        if (status) {
-          status.className = 'status-indicator status-indicator--connected';
-          status.innerHTML = '<span class="status-indicator__dot"></span><span>Syncing...</span>';
-        }
-        const ok = await this.connect(data.walletName, true);
-        if (!ok) {
-          localStorage.removeItem('shadowSyndicate_wallet');
+      try {
+        const data = JSON.parse(saved);
+        if (data.connected && data.walletName && data.address) {
+          this.connected = true;
+          this.walletName = data.walletName;
+          this.address = data.address;
+
+          const status = document.getElementById('connectionStatus');
+          if (status) {
+            status.className = 'status-indicator status-indicator--connected';
+            status.innerHTML = '<span class="status-indicator__dot"></span><span>Syncing...</span>';
+          }
+
           this.updateUI();
+          await this.loadBalanceForAddress();
+          this.updateUI();
+          window.dispatchEvent(new CustomEvent('wallet:connected', { detail: { wallet: this.walletName, balance: this.balance, address: this.address } }));
+
+          // If the wallet says this origin is already enabled, refresh the API handle silently.
+          // If it is not enabled, do NOT call enable() here because some wallets prompt again.
+          this.refreshWalletApiIfEnabled().catch(() => {});
         }
+      } catch (e) {
+        console.warn('[WALLET] Saved wallet state was invalid:', e.message);
+        localStorage.removeItem('shadowSyndicate_wallet');
+        this.updateUI();
       }
     }
+  }
+
+  async refreshWalletApiIfEnabled() {
+    if (!this.walletName || !window.cardano || !window.cardano[this.walletName]) return false;
+    const wallet = window.cardano[this.walletName];
+    if (typeof wallet.isEnabled === 'function') {
+      const enabled = await wallet.isEnabled();
+      if (!enabled) return false;
+    }
+    this.api = await wallet.enable();
+    return true;
   }
 
   async connect(walletName, silent = false) {
@@ -820,9 +845,11 @@ document.addEventListener('DOMContentLoaded', () => {
   modalManager = new ModalManager();
   proofGenerator = new ProofGenerator();
 
-  // Wallet connection buttons
+  // Wallet connection buttons (skip anything already bound by WalletManager)
   const connectBtns = document.querySelectorAll('#connectWalletBtn, #ctaConnectBtn');
   connectBtns.forEach(btn => {
+    if (btn._bound) return;
+    btn._bound = true;
     btn.addEventListener('click', () => {
       if (walletManager.connected) {
         walletManager.disconnect();
@@ -834,12 +861,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Close wallet modal
   const closeModalBtn = document.getElementById('closeWalletModal');
-  if (closeModalBtn) {
+  if (closeModalBtn && !closeModalBtn._bound) {
+    closeModalBtn._bound = true;
     closeModalBtn.addEventListener('click', () => modalManager.close());
   }
 
-  // Wallet options
+  // Wallet options (skip anything already bound by WalletManager to avoid duplicate enable() calls)
   document.querySelectorAll('.wallet-option').forEach(option => {
+    if (option._bound) return;
+    option._bound = true;
     option.addEventListener('click', async () => {
       const walletType = option.dataset.wallet;
       option.style.opacity = '0.5';
