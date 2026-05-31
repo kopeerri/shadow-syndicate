@@ -5,7 +5,7 @@
  * Then open with: DepositModal.open()
  */
 const DepositModal = (() => {
-  const API = SYNDICATE_API + '';
+  const API_URL = SYNDICATE_API + '';
   let _info = null;
 
   function waddr() {
@@ -81,7 +81,7 @@ const DepositModal = (() => {
 
   async function load() {
     try {
-      const r = await fetch(`${API}/deposit/info`);
+      const r = await fetch(`${API_URL}/deposit/info`);
       _info = await r.json();
       document.getElementById('dmAddr').textContent =
         _info.casino_wallet || 'Not configured';
@@ -100,7 +100,7 @@ const DepositModal = (() => {
     const bal = document.getElementById('dmBalance');
     st.innerHTML = '<span>⏳ Scanning blockchain...</span>';
     try {
-      const r = await fetch(`${API}/deposit/verify/${encodeURIComponent(a)}`);
+      const r = await fetch(`${API_URL}/deposit/verify/${encodeURIComponent(a)}`);
       const d = await r.json();
       if (d.new_deposits?.length > 0) {
         const total = d.new_deposits.reduce((s, x) => s + x.shade_amount, 0);
@@ -124,7 +124,7 @@ const DepositModal = (() => {
     const a = waddr();
     if (a) {
       try {
-        const r = await fetch(`${API}/session/${encodeURIComponent(a)}`);
+        const r = await fetch(`${API_URL}/session/${encodeURIComponent(a)}`);
         const d = await r.json();
         document.getElementById('dmBalance').textContent =
           `Casino balance: ${d.balance_shade || '0'} $SHADE`;

@@ -89,13 +89,13 @@
 
     <script src="scripts/main.js"></script>
     <script>
-        const API = SYNDICATE_API + '';
+        const API_URL = SYNDICATE_API;
 
         function waddr() { const w = window.ShadowSyndicate?.wallet(); return w?.connected ? w.address : null; }
 
         async function load() {
             try {
-                const r = await fetch(`${API}/deposit/info`);
+                const r = await fetch(`${API_URL}/deposit/info`);
                 const info = await r.json();
                 document.getElementById('casAddr').textContent = info.casino_wallet || 'Not configured';
                 document.getElementById('policyBadge').textContent = 'Policy: ' + info.shade_policy_id;
@@ -111,12 +111,12 @@
             const a = waddr();
             if (!a) { document.getElementById('walBal').textContent = '--'; return; }
             try {
-                const r = await fetch(`${API}/wallet/balance/${encodeURIComponent(a)}`);
+                const r = await fetch(`${API_URL}/wallet/balance/${encodeURIComponent(a)}`);
                 const d = await r.json();
                 document.getElementById('walBal').textContent = (d.shade_balance || 0).toLocaleString();
             } catch(e) {}
             try {
-                const r = await fetch(`${API}/session/${encodeURIComponent(a)}`);
+                const r = await fetch(`${API_URL}/session/${encodeURIComponent(a)}`);
                 const d = await r.json();
                 document.getElementById('casBal').textContent = (d.balance_shade || '0');
             } catch(e) {}
@@ -128,7 +128,7 @@
             const st = document.getElementById('verifyStatus');
             st.innerHTML = '<span>Scanning blockchain...</span>';
             try {
-                const r = await fetch(`${API}/deposit/verify/${encodeURIComponent(a)}`);
+                const r = await fetch(`${API_URL}/deposit/verify/${encodeURIComponent(a)}`);
                 const d = await r.json();
                 if (d.new_deposits?.length > 0) {
                     const total = d.new_deposits.reduce((s,x) => s + x.shade_amount, 0);
