@@ -143,14 +143,12 @@ class WalletManager {
         return true;
 
       } catch (err) {
-        // Wallet API became stale (common after page refresh) — reset and retry once
+        // Wallet API became stale (common after page refresh) — always retry once
         if (err.message && err.message.includes('shutdown')) {
           this.api = null;
-          if (!silent) {
-            // Retry once after a short delay
-            await new Promise(r => setTimeout(r, 500));
-            try {
-              this.api = await window.cardano[walletName].enable();
+          await new Promise(r => setTimeout(r, 500));
+          try {
+            this.api = await window.cardano[walletName].enable();
               this.connected = true;
               this.walletName = walletName;
               this.address = await this.getWalletAddress();
@@ -162,7 +160,6 @@ class WalletManager {
             } catch (retryErr) {
               // Still failed — let user try manually
             }
-          }
         }
         if (!silent) {
           // User rejected or wallet error — don't show raw error, just a clean message
