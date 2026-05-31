@@ -1,3 +1,2 @@
 // Shadow Syndicate — Frontend Config
-// Change this to your backend URL before deploying
-const SYNDICATE_API = '${SYNDICATE_API}';
+const SYNDICATE_API = 'http://192.168.178.220:8000';
