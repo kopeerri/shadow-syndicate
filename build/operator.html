@@ -138,7 +138,7 @@
 
         async function loadCasinoInfo() {
             try {
-                const r = await fetch(`${API_URL}/, {headers: {'ngrok-skip-browser-warning': '1'}})deposit/info`);
+                const r = await fetch(`${API_URL}/deposit/info`, { headers: { 'ngrok-skip-browser-warning': '1' } });
                 const d = await r.json();
                 document.getElementById('casinoAddr').textContent = d.casino_wallet || 'Not configured';
             } catch(e) {}
@@ -146,7 +146,7 @@
 
         async function loadPending() {
             try {
-                const r = await fetch(`${API_URL}/, {headers: {'ngrok-skip-browser-warning': '1'}})withdraw/pending`);
+                const r = await fetch(`${API_URL}/withdraw/pending`, { headers: { 'ngrok-skip-browser-warning': '1' } });
                 const d = await r.json();
                 const el = document.getElementById('pendingList');
                 if (!d.pending?.length) {
@@ -180,9 +180,9 @@
         async function markSent(wid) {
             const txHash = document.getElementById('tx-' + wid)?.value?.trim() || '';
             try {
-                const r = await fetch(`${API_URL}/, {headers: {'ngrok-skip-browser-warning': '1'}})withdraw/mark-sent`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
-                    headers: {'Content-Type': 'application/json'},
+                const r = await fetch(`${API_URL}/withdraw/mark-sent`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
                     body: JSON.stringify({withdrawal_id: wid, tx_hash: txHash}),
                 });
                 if (r.ok) {
