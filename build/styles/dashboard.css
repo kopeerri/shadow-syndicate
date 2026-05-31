@@ -1,0 +1,398 @@
+/* =====================================================
+   THE SHADOW SYNDICATE - Dashboard Styles
+   Command Deck Interface
+   ===================================================== */
+
+/* ========== DASHBOARD LAYOUT ========== */
+.dashboard {
+    min-height: 100vh;
+    padding-top: calc(var(--header-height, 50px) + 4rem);
+    padding-bottom: var(--space-8);
+    background:
+        radial-gradient(ellipse at top left, rgba(57, 255, 20, 0.02) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(0, 240, 255, 0.02) 0%, transparent 50%),
+        var(--void-black);
+}
+
+.dashboard__container {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+/* ========== DASHBOARD HEADER ========== */
+.dashboard__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: var(--border-thin) solid var(--void-border);
+}
+
+.dashboard__title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-2);
+}
+
+.dashboard__subtitle {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+.dashboard__header-stats {
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+}
+
+/* ========== QUICK STATS ========== */
+.dashboard__quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--void-surface);
+    border: var(--border-thin) solid var(--void-border);
+    transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+    border-color: var(--phosphor-green-dim);
+}
+
+.stat-card__icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--void-deep);
+    border: var(--border-thin) solid var(--void-border);
+    font-size: var(--text-xl);
+}
+
+.stat-card__info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-card__value {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--phosphor-green);
+}
+
+.stat-card--green .stat-card__value {
+    color: var(--phosphor-green);
+}
+
+.stat-card--amber .stat-card__value {
+    color: var(--neon-amber);
+}
+
+.stat-card--cyan .stat-card__value {
+    color: var(--cyber-cyan);
+}
+
+.stat-card--red .stat-card__value {
+    color: var(--error-red);
+}
+
+.stat-card__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+}
+
+/* ========== DASHBOARD GRID ========== */
+.dashboard__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+}
+
+.dashboard__panel {
+    background: var(--void-surface);
+    border: var(--border-thin) solid var(--void-border);
+    padding: var(--space-6);
+}
+
+.dashboard__panel--wide {
+    grid-column: span 2;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-6) calc(var(--space-6) * -1);
+    /* Negative margin to fill header */
+    padding: var(--space-4) var(--space-6);
+    border-bottom: var(--border-thin) solid var(--void-border);
+    background:
+        linear-gradient(to right, rgba(5, 5, 5, 0.8), rgba(5, 5, 5, 0.4)),
+        url('../assets/carbon fibre.png');
+    background-size: 200px;
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-lg);
+    margin: 0;
+}
+
+.panel-title__icon {
+    color: var(--cyber-cyan);
+}
+
+/* ========== GAMES LIST ========== */
+.games-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.game-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--void-deep);
+    border: var(--border-thin) solid var(--void-border);
+    transition: all var(--transition-base);
+    text-decoration: none;
+}
+
+.game-item:hover {
+    border-color: var(--phosphor-green);
+    background: var(--phosphor-green-subtle);
+}
+
+.game-item__icon {
+    font-size: var(--text-2xl);
+}
+
+.game-item__info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.game-item__name {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--phosphor-green);
+}
+
+.game-item__arrow {
+    color: var(--text-muted);
+    font-size: var(--text-lg);
+    transition: transform var(--transition-fast);
+}
+
+.game-item:hover .game-item__arrow {
+    transform: translateX(4px);
+    color: var(--phosphor-green);
+}
+
+/* ========== TERMINAL LOG ========== */
+.dashboard__panel .terminal-log {
+    background: var(--void-black);
+    min-height: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Keep panel content contained */
+.dashboard__panel {
+    overflow: hidden;
+}
+
+/* ========== STAKING ========== */
+.staking-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.staking-stat {
+    padding: var(--space-4);
+    background: var(--void-deep);
+    border: var(--border-thin) solid var(--void-border);
+}
+
+.staking-stat__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: var(--space-2);
+}
+
+.staking-stat__value {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--phosphor-green);
+}
+
+.staking-stat__value--green {
+    color: var(--phosphor-green);
+}
+
+.staking-stat__value--amber {
+    color: var(--neon-amber);
+}
+
+.staking-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.staking-actions .btn {
+    flex: 1;
+}
+
+/* ========== NFT DISPLAY ========== */
+.nft-display {
+    min-height: 200px;
+}
+
+.nft-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-8);
+    background: var(--void-deep);
+    border: var(--border-thin) dashed var(--void-border);
+}
+
+.nft-placeholder__icon {
+    font-size: 48px;
+    opacity: 0.3;
+    margin-bottom: var(--space-4);
+}
+
+.nft-placeholder__text {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+.nft-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-3);
+}
+
+.nft-item {
+    aspect-ratio: 1;
+    background: var(--void-deep);
+    border: var(--border-thin) solid var(--void-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-3xl);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.nft-item:hover {
+    border-color: var(--phosphor-green);
+    box-shadow: var(--glow-green);
+}
+
+.nft-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ========== TERMINAL FOOTER ========== */
+.terminal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4);
+    background: var(--void-surface);
+    border: var(--border-thin) solid var(--void-border);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+}
+
+.terminal-footer__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.terminal-footer__indicator {
+    width: 8px;
+    height: 8px;
+    background: var(--phosphor-green);
+    border-radius: 50%;
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+    .dashboard__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard__panel--wide {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard__header {
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    .dashboard__title {
+        font-size: var(--text-2xl);
+    }
+
+    .dashboard__quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .staking-info {
+        grid-template-columns: 1fr;
+    }
+
+    .staking-actions {
+        flex-direction: column;
+    }
+
+    .terminal-footer {
+        flex-direction: column;
+        gap: var(--space-2);
+        text-align: center;
+    }
+}

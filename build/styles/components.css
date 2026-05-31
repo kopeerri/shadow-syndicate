@@ -1,0 +1,544 @@
+/* =====================================================
+   THE SHADOW SYNDICATE - Component Library
+   Holo-Chrome Edition
+   ===================================================== */
+
+/* ========== GLASS PANELS ========== */
+.terminal-frame,
+.glass-panel {
+    position: relative;
+    background: rgba(20, 25, 35, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: var(--space-6);
+}
+
+.terminal-frame::before,
+.glass-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* ========== BUTTONS ========== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: 12px 24px;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    text-decoration: none;
+    border: none;
+    border-radius: 30px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Primary Button - Teal */
+.btn-primary {
+    color: #000;
+    background: var(--holo-teal);
+    box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #fff;
+    box-shadow: 0 0 30px rgba(45, 212, 191, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Secondary Button - Outline */
+.btn-secondary {
+    color: var(--chrome-silver);
+    border: 1px solid var(--chrome-dark);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    border-color: var(--chrome-highlight);
+    color: var(--chrome-highlight);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Amber/Gold Button - CTAs */
+.btn-amber {
+    color: #000;
+    background: var(--holo-gold);
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+}
+
+.btn-amber:hover:not(:disabled) {
+    background: #fff;
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Cyan Button - Wallet/Privacy */
+.btn-cyan {
+    color: #000;
+    background: var(--holo-blue);
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+}
+
+.btn-cyan:hover:not(:disabled) {
+    background: #fff;
+    box-shadow: 0 0 30px rgba(96, 165, 250, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Danger Button */
+.btn-danger {
+    color: #fff;
+    background: var(--state-error);
+    box-shadow: 0 0 20px rgba(248, 113, 113, 0.3);
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #fff;
+    color: var(--state-error);
+}
+
+/* Ghost Button */
+.btn-ghost {
+    color: var(--chrome-dark);
+    background: transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+    color: var(--chrome-highlight);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Button Sizes */
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+}
+
+.btn-lg {
+    padding: 16px 32px;
+    font-size: 1rem;
+}
+
+/* ========== DATA READOUTS ========== */
+.data-readout {
+    font-family: var(--font-mono);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: var(--space-2) var(--space-3);
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.data-readout__label {
+    color: var(--chrome-silver);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+}
+
+.data-readout__value {
+    color: var(--chrome-highlight);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.data-readout__value--amber {
+    color: var(--holo-gold);
+}
+
+.data-readout__value--cyan {
+    color: var(--holo-blue);
+}
+
+.data-readout__value--red {
+    color: var(--state-error);
+}
+
+.data-readout__value--mono {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    letter-spacing: 0.02rem;
+}
+
+/* Large Readout for balances - more compact for header */
+.data-readout-lg {
+    padding: var(--space-3) var(--space-4);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+}
+
+.data-readout-lg .data-readout__value {
+    font-size: 1.5rem;
+}
+
+/* ========== STATUS INDICATORS ========== */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--chrome-dark);
+}
+
+.status-indicator__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--holo-teal);
+    box-shadow: 0 0 10px var(--holo-teal);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.status-indicator--connected .status-indicator__dot {
+    background: var(--holo-teal);
+    box-shadow: 0 0 10px var(--holo-teal);
+}
+
+.status-indicator--disconnected .status-indicator__dot {
+    background: var(--state-error);
+    box-shadow: 0 0 10px var(--state-error);
+    animation: none;
+}
+
+.status-indicator--pending .status-indicator__dot {
+    background: var(--holo-gold);
+    box-shadow: 0 0 10px var(--holo-gold);
+}
+
+/* ========== INPUT FIELDS ========== */
+.input {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--chrome-highlight);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.input:focus {
+    border-color: var(--holo-purple);
+    box-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
+}
+
+.input::placeholder {
+    color: var(--chrome-dark);
+}
+
+.input--error {
+    border-color: var(--state-error);
+}
+
+/* ========== CARDS ========== */
+.card {
+    background: rgba(20, 25, 35, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: var(--space-6);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
+}
+
+.card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card__title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--chrome-highlight);
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+}
+
+.card__content {
+    color: var(--chrome-dark);
+}
+
+/* ========== PROGRESS BAR ========== */
+.progress {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress__bar {
+    height: 100%;
+    background: var(--gradient-holo);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+/* ========== BADGES ========== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.badge--green {
+    color: var(--holo-teal);
+    border: 1px solid var(--holo-teal);
+}
+
+.badge--amber {
+    color: var(--holo-gold);
+    border: 1px solid var(--holo-gold);
+}
+
+.badge--cyan {
+    color: var(--holo-blue);
+    border: 1px solid var(--holo-blue);
+}
+
+.badge--red {
+    color: var(--state-error);
+    border: 1px solid var(--state-error);
+}
+
+/* ========== DIVIDERS ========== */
+.divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    margin: var(--space-6) 0;
+}
+
+/* ========== MODAL ========== */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-backdrop.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: rgba(20, 25, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: var(--space-8);
+    max-width: 500px;
+    width: 90%;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+}
+
+.modal__title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--chrome-highlight);
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+}
+
+.modal__close {
+    background: none;
+    border: none;
+    color: var(--chrome-dark);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    line-height: 1;
+}
+
+.modal__close:hover {
+    color: var(--state-error);
+}
+
+/* ========== WALLET OPTIONS ========== */
+.wallet-modal__options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.wallet-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wallet-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--holo-purple);
+    transform: translateX(5px);
+}
+
+.wallet-option__icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+.wallet-option__name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--chrome-highlight);
+}
+
+.wallet-option__description {
+    font-size: 0.8rem;
+    color: var(--chrome-dark);
+}
+
+/* ========== LOADING STATES ========== */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 5, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--holo-purple);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    margin-top: var(--space-4);
+    font-family: var(--font-mono);
+    color: var(--chrome-dark);
+}
+
+/* ========== UTILITY CLASSES ========== */
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: var(--chrome-dark);
+}
+
+.text-green {
+    color: var(--holo-teal);
+}
+
+.text-amber {
+    color: var(--holo-gold);
+}
+
+.mt-4 {
+    margin-top: var(--space-4);
+}
+
+.mt-8 {
+    margin-top: var(--space-8);
+}
+
+.mb-4 {
+    margin-bottom: var(--space-4);
+}
+
+.hidden {
+    display: none !important;
+}

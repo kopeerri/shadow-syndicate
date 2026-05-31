@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw $SHADE | Shadow Syndicate</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        body { background: var(--void-black); min-height: 100vh; display: flex; flex-direction: column; color: var(--text-primary); }
+        .header { position: sticky; top: 0; z-index: 100; }
+        .wd-page { flex: 1; display: flex; align-items: center; justify-content: center; padding: var(--space-8) var(--space-4); }
+        .wd-card { background: var(--void-surface); border: 1px solid var(--void-border); border-radius: var(--radius-lg); padding: var(--space-6); max-width: 480px; width: 100%; backdrop-filter: blur(12px); }
+        .wd-card__title { font-family: var(--font-display); font-size: var(--text-xl); color: var(--holo-gold); text-align: center; margin-bottom: var(--space-1); }
+        .wd-card__sub { color: var(--text-muted); font-size: var(--text-sm); text-align: center; margin-bottom: var(--space-6); }
+        .wd-step { display: flex; align-items: flex-start; gap: var(--space-3); margin-bottom: var(--space-3); }
+        .wd-step__num { width: 22px; height: 22px; border-radius: 50%; background: rgba(251,191,36,0.12); color: var(--holo-gold); font-family: var(--font-mono); font-size: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .wd-step__text { color: var(--text-secondary); font-size: var(--text-sm); padding-top: 1px; }
+        .wd-bal-row { display: flex; justify-content: space-between; padding: var(--space-2) 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .wd-bal-row:last-child { border: none; }
+        .wd-bal-label { font-size: var(--text-xs); color: var(--text-muted); text-transform: uppercase; }
+        .wd-bal-val { font-family: var(--font-mono); font-size: var(--text-base); font-weight: 700; color: var(--holo-purple); }
+        .wd-bal-val--gold { color: var(--holo-gold); }
+        .wd-input-wrap { background: rgba(0,0,0,0.3); border: 1px solid var(--void-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+        .wd-input-wrap:focus-within { border-color: var(--holo-gold); }
+        .wd-input-wrap input { flex: 1; background: none; border: none; color: var(--text-primary); font-family: var(--font-mono); font-size: var(--text-xl); outline: none; width: 100%; }
+        .wd-input-wrap span { font-family: var(--font-mono); font-weight: 700; color: var(--holo-gold); font-size: var(--text-lg); }
+        .wd-status { font-family: var(--font-mono); font-size: var(--text-xs); margin-top: var(--space-3); min-height: 1.2em; text-align: center; }
+        .wd-addr { background: rgba(0,0,0,0.3); border: 1px dashed var(--void-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); font-family: var(--font-mono); font-size: 11px; color: var(--holo-gold); word-break: break-all; line-height: 1.5; user-select: all; }
+        .btn-withdraw { display: block; width: 100%; padding: var(--space-3); background: linear-gradient(135deg, var(--holo-gold), #F59E0B); color: #000; border: none; border-radius: var(--radius-md); font-family: var(--font-display); font-weight: 700; cursor: pointer; transition: all .2s; }
+        .btn-withdraw:hover { box-shadow: 0 0 20px rgba(251,191,36,0.4); transform: translateY(-1px); }
+        .btn-withdraw:disabled { opacity: 0.4; cursor: not-allowed; }
+        .hist-item { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-family: var(--font-mono); font-size: var(--text-xs); }
+        .hist-item__amt { color: var(--state-error); }
+        .hist-item__status { padding: 1px 8px; border-radius: 999px; font-size: 10px; }
+        .hist-item__status--pending { background: rgba(251,191,36,0.15); color: var(--holo-gold); }
+        .hist-item__status--sent { background: rgba(96,165,250,0.15); color: var(--holo-blue); }
+        .hist-item__status--confirmed { background: rgba(45,212,191,0.15); color: var(--state-success); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header__inner">
+            <a href="index.html" class="header__logo">
+                <img src="logo.png" alt="Shadow Syndicate"><span class="header__logo-text">Shadow Syndicate</span>
+            </a>
+            <nav class="header__nav">
+                <a href="index.html#games" class="header__nav-link">Games</a>
+                <a href="deposit.html" class="header__nav-link">Deposit</a>
+                <a href="withdraw.html" class="header__nav-link active">Withdraw</a>
+                <a href="dashboard.html" class="header__nav-link">Terminal</a>
+            </nav>
+            <div class="header__actions">
+                <div class="status-indicator status-indicator--disconnected" id="connectionStatus"><span class="status-indicator__dot"></span><span>Offline</span></div>
+                <button class="btn btn-cyan btn-sm" id="connectWalletBtn"><span>⬡</span> Connect</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="wd-page">
+        <div class="wd-card">
+            <h1 class="wd-card__title">Withdraw $SHADE</h1>
+            <p class="wd-card__sub">Request a withdrawal. Funds are sent manually by the operator.</p>
+
+            <div class="wd-bal-row"><span class="wd-bal-label">Casino Balance</span><span class="wd-bal-val" id="casBal">0</span></div>
+            <div class="wd-bal-row"><span class="wd-bal-label">Your Wallet</span><span class="wd-bal-val" id="walAddr">--</span></div>
+
+            <div class="wd-step" style="margin-top:var(--space-6);"><span class="wd-step__num">1</span><span class="wd-step__text">Enter amount to withdraw:</span></div>
+            <div class="wd-input-wrap">
+                <input type="number" id="wdAmount" value="1000" min="100" placeholder="Amount">
+                <span>$SHADE</span>
+            </div>
+            <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-4);">
+                <button class="btn btn-ghost btn-sm" id="wd25">25%</button>
+                <button class="btn btn-ghost btn-sm" id="wd50">50%</button>
+                <button class="btn btn-ghost btn-sm" id="wdMax">MAX</button>
+            </div>
+
+            <div class="wd-step"><span class="wd-step__num">2</span><span class="wd-step__text">Confirm withdrawal:</span></div>
+            <button class="btn-withdraw" id="wdBtn" disabled>Request Withdrawal</button>
+            <div class="wd-status" id="wdStatus"></div>
+
+            <div style="margin-top:var(--space-4);padding:var(--space-3) var(--space-4);background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:var(--radius-md);">
+                <div style="display:flex;align-items:flex-start;gap:var(--space-2);">
+                    <span style="font-size:14px;flex-shrink:0;">⚠️</span>
+                    <div>
+                        <span style="font-size:var(--text-xs);color:var(--holo-gold);font-weight:600;">Manual Processing</span>
+                        <span class="wd-info-tip" title="Withdrawals are manually processed to ensure no bugs or exploits can drain the treasury. We're new at this — bear with us, we'll automate soon." style="margin-left:4px;cursor:help;font-size:11px;color:var(--holo-gold);border:1px solid rgba(251,191,36,0.3);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;">?</span>
+                        <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-1);margin-bottom:0;">Withdrawals are processed manually by the operator. Please allow some time for your funds to arrive. This is a temporary measure while we iron out the automated system.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wd-step" style="margin-top:var(--space-6);"><span class="wd-step__num">3</span><span class="wd-step__text">Operator will send to your wallet. Check history below.</span></div>
+        </div>
+
+        <div class="wd-card" style="margin-top:var(--space-4);">
+            <h2 style="font-family:var(--font-display);font-size:var(--text-lg);color:var(--text-primary);margin-bottom:var(--space-4);">History</h2>
+            <div id="wdHistory"><div style="color:var(--text-muted);font-size:var(--text-sm);text-align:center;padding:var(--space-4);">Connect wallet to see history.</div></div>
+        </div>
+    </div>
+
+    <!-- Wallet Modal -->
+    <div class="modal-backdrop" id="walletModalBackdrop"></div>
+    <div class="modal" id="walletModal">
+        <div class="modal__header"><h3 class="modal__title">Connect Wallet</h3><button class="modal__close" id="closeWalletModal">&times;</button></div>
+        <p style="font-size:var(--text-sm);padding:0 var(--space-4);color:var(--text-muted);">Connect to request withdrawals.</p>
+        <div class="wallet-modal__options">
+            <div class="wallet-option" data-wallet="lace"><div class="wallet-option__icon"><span style="font-size:24px;">L</span></div><div class="wallet-option__info"><div class="wallet-option__name">Lace</div><div class="wallet-option__description">Cardano Wallet</div></div></div>
+            <div class="wallet-option" data-wallet="eternl"><div class="wallet-option__icon"><span style="font-size:24px;">E</span></div><div class="wallet-option__info"><div class="wallet-option__name">Eternl</div><div class="wallet-option__description">Advanced Cardano</div></div></div>
+            <div class="wallet-option" data-wallet="vespr"><div class="wallet-option__icon"><span style="font-size:24px;">V</span></div><div class="wallet-option__info"><div class="wallet-option__name">Vespr</div><div class="wallet-option__description">Mobile-First</div></div></div>
+        </div>
+    </div>
+
+    <script src="scripts/config.js"></script>
+  <script src="scripts/api.js"></script>
+    <script src="scripts/main.js"></script>
+    <script>
+        const API_URL = SYNDICATE_API + '';
+        function waddr() { const w = window.ShadowSyndicate?.wallet(); return w?.connected ? w.address : null; }
+
+        async function refresh() {
+            const a = waddr();
+            if (!a) { document.getElementById('walAddr').textContent = '--'; document.getElementById('wdBtn').disabled = true; return; }
+            document.getElementById('walAddr').textContent = a.substring(0, 14) + '...' + a.substring(a.length - 8);
+            document.getElementById('wdBtn').disabled = false;
+            try {
+                const r = await fetch(`${API_URL}/session/${encodeURIComponent(a)}`);
+                const d = await r.json();
+                document.getElementById('casBal').textContent = (d.balance_shade || '0');
+                window._bal = d.balance || 0;
+                document.getElementById('wd25').addEventListener('click', () => { document.getElementById('wdAmount').value = Math.floor(window._bal * 0.25); });
+                document.getElementById('wd50').addEventListener('click', () => { document.getElementById('wdAmount').value = Math.floor(window._bal * 0.5); });
+                document.getElementById('wdMax').addEventListener('click', () => { document.getElementById('wdAmount').value = window._bal; });
+            } catch(e) {}
+            loadHistory();
+        }
+
+        async function loadHistory() {
+            const a = waddr();
+            if (!a) return;
+            try {
+                const r = await fetch(`${API_URL}/withdraw/history/${encodeURIComponent(a)}`);
+                const d = await r.json();
+                const el = document.getElementById('wdHistory');
+                if (!d.withdrawals?.length) {
+                    el.innerHTML = '<div style="color:var(--text-muted);font-size:var(--text-sm);text-align:center;padding:var(--space-4);">No withdrawals yet.</div>';
+                    return;
+                }
+                el.innerHTML = d.withdrawals.slice().reverse().map(w => `
+                    <div class="hist-item">
+                        <span>${w.shade_amount.toLocaleString()} $SHADE</span>
+                        <span class="hist-item__status hist-item__status--${w.status}">${w.status.toUpperCase()}</span>
+                        <span style="color:var(--text-muted);font-size:10px;">${(w.timestamp||'').substring(0,10)}</span>
+                    </div>
+                `).join('');
+            } catch(e) {}
+        }
+
+        document.getElementById('wdBtn').addEventListener('click', async () => {
+            const a = waddr();
+            if (!a) { document.getElementById('walletModal').classList.add('active'); document.getElementById('walletModalBackdrop').classList.add('active'); return; }
+            const amount = parseInt(document.getElementById('wdAmount').value) || 0;
+            if (amount <= 0) return;
+            const st = document.getElementById('wdStatus');
+            st.innerHTML = '<span>Processing...</span>';
+            try {
+                const r = await fetch(`${API_URL}/withdraw/request`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({wallet_address: a, shade_amount: amount}),
+                });
+                const d = await r.json();
+                if (r.ok) {
+                    st.innerHTML = `<span style="color:var(--state-success);">Withdrawal #${d.id} requested! ${d.shade_amount.toLocaleString()} $SHADE will be sent to your wallet.</span>`;
+                    refresh(); loadHistory();
+                } else {
+                    st.innerHTML = `<span style="color:var(--state-error);">${d.detail || 'Error'}</span>`;
+                }
+            } catch(e) { st.innerHTML = '<span style="color:var(--state-error);">Server offline</span>'; }
+        });
+
+        // Wallet modal now handled globally by main.js
+
+        window.addEventListener('wallet:connected', () => setTimeout(refresh, 500));
+    </script>
+</body>
+</html>

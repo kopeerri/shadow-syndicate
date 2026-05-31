@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Grid Breach - ZK-verified Mines game on The Shadow Syndicate">
+    <title>Shadow Syndicate | Grid Breach</title>
+    <link rel="icon" type="image/png" href="../logo.png">
+    <link rel="stylesheet" href="../styles/variables.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <link rel="stylesheet" href="../styles/games.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&family=Inter:wght@300;400;500;600&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        .demo-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9998;
+            background: linear-gradient(90deg, #FFB000, #FF6B00, #FFB000);
+            background-size: 200% auto;
+            animation: shimmer-banner 3s linear infinite;
+            color: #000;
+            text-align: center;
+            padding: 6px 20px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase
+        }
+
+        @keyframes shimmer-banner {
+            to {
+                background-position: 200% center
+            }
+        }
+
+        body.has-demo-banner .table-header {
+            top: 30px
+        }
+
+        .demo-mode-pill {
+            position: fixed;
+            top: 38px;
+            right: 16px;
+            z-index: 9997;
+            padding: 3px 12px;
+            background: rgba(255, 176, 0, 0.15);
+            border: 1px solid rgba(255, 176, 0, 0.3);
+            border-radius: 999px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.65rem;
+            color: #FFB000;
+            text-transform: uppercase;
+            letter-spacing: 0.1em
+        }
+        .game-tabs { display: flex; gap: 2px; }
+        .game-tab { padding: 4px 14px; border-radius: var(--radius-sm) var(--radius-sm) 0 0; font-family: var(--font-display); font-size: 10px; font-weight: 600; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid transparent; border-bottom: 2px solid transparent; transition: all .2s; color: var(--text-muted); background: transparent; }
+        .game-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.06); }
+        .game-tab--active { color: var(--holo-teal) !important; border-bottom-color: var(--holo-teal) !important; background: rgba(45,212,191,0.06) !important; }
+        .game-tab__icon { margin-right: 4px; font-size: 12px; }
+    </style>
+</head>
+
+<body class="game-body has-demo-banner">
+    <!-- Demo Banner -->
+    <div class="demo-banner">⬡ SHADOW SYNDICATE — $SHADE betting on Cardano.</div>
+    <!-- LIVE indicator removed for v1.0 -->
+    <!-- Header -->
+    <header class="table-header" id="gameHeader">
+        <div class="brand-display">
+            <a href="../index.html" class="logo-link">
+                <img src="../logo.png" alt="Shadow Syndicate" class="brand-logo">
+                <span class="brand-name">Grid Breach</span>
+            </a>
+        </div>
+        <div class="system-status">
+            <div class="status-item">
+                <span class="label">GAMES</span>
+                    <div class="game-tabs">
+                        <a href="blackjack.html" class="game-tab"><span class="game-tab__icon">🂡</span>Blackjack</a>
+                        <a href="dice.html" class="game-tab"><span class="game-tab__icon">🎲</span>Dice</a>
+                        <a href="mines.html" class="game-tab game-tab--active"><span class="game-tab__icon">💣</span>Mines</a>
+                    </div>
+            </div>
+            <div class="status-item">
+                <span class="label">BALANCE</span>
+                <span class="value" id="balanceDisplay">10,000 SHADE</span>
+                <button class="deposit-btn" title="Deposit $SHADE" onclick="DepositModal.open()">+</button>
+            </div>
+        </div>
+        <button class="header-toggle" id="headerToggle" aria-label="Toggle header"></button>
+    </header>
+
+    <!-- Main Game Layout -->
+    <div class="game-container">
+
+        <!-- Sidebar Controls -->
+        <aside class="game-sidebar">
+            <h3 class="sidebar-title">Configuration</h3>
+
+            <!-- Settings Mode (Visible when not playing) -->
+            <div id="settingsControls" class="sidebar-group">
+                <!-- Mine Count -->
+                <div class="sidebar-group">
+                    <label class="sidebar-label">Mines</label>
+                    <select class="sidebar-select" id="mineCount">
+                        <option value="1">1 Mine</option>
+                        <option value="3" selected>3 Mines</option>
+                        <option value="5">5 Mines</option>
+                        <option value="7">7 Mines</option>
+                        <option value="10">10 Mines</option>
+                        <option value="15">15 Mines</option>
+                        <option value="20">20 Mines</option>
+                    </select>
+                </div>
+
+                <!-- Bet Amount -->
+                <div class="sidebar-group">
+                    <label class="sidebar-label">Bet Amount</label>
+                    <div class="bet-input-group" style="width: 100%;">
+                        <input type="number" class="sidebar-input" id="betAmountInput" value="1000" min="100" max="50000"
+                            style="width: 100%;">
+                    </div>
+                </div>
+
+                <div class="sidebar-group spacer"></div>
+
+                <button class="holo-btn primary-btn btn-block" id="startGameBtn">
+                    <span>◈</span> START BREACH
+                </button>
+            </div>
+
+            <!-- Play Mode (Visible when playing) -->
+            <div id="playControls" class="sidebar-group hidden">
+                <div class="stat-pill" style="width: 100%; box-sizing: border-box;">
+                    <span class="stat-label">Revealed</span>
+                    <span class="stat-value" id="revealedCount">0</span>
+                </div>
+
+                <div class="stat-pill" style="width: 100%; box-sizing: border-box;">
+                    <span class="stat-label">Safe Remaining</span>
+                    <span class="stat-value" id="safeLeft">22</span>
+                </div>
+
+                <div class="sidebar-group spacer"></div>
+
+                <button class="holo-btn cashout-btn btn-block" id="cashoutBtn">
+                    <span>↑</span> CASH OUT
+                </button>
+            </div>
+
+        </aside>
+
+        <!-- Game Stage -->
+        <section class="game-stage">
+            <div class="holographic-grid" style="z-index: 0;"></div>
+
+            <div
+                style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 40px;">
+                <!-- Multiplier Display -->
+                <div class="mines-multiplier-zone">
+                    <div class="multiplier-display">
+                        <span class="multiplier-label">CURRENT MULTIPLIER</span>
+                        <span class="multiplier-value" id="currentMultiplier">1.00x</span>
+                    </div>
+                    <div class="potential-win" id="potentialWin" style="display: none;">
+                        <span class="potential-label">POTENTIAL WIN</span>
+                        <span class="potential-value" id="potentialWinAmount">0</span>
+                        <span class="potential-currency">SHADE</span>
+                    </div>
+                </div>
+
+                <!-- Mines Grid -->
+                <div class="mines-grid" id="minesGrid">
+                    <!-- Cells generated by JS -->
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Game Rules (Accessible Sidebar) -->
+    <aside class="game-rules-panel" id="rulesPanel">
+        <button class="rules-toggle" id="rulesToggle" aria-label="Toggle game rules">?</button>
+        <div class="rules-content">
+            <h4>Game Rules</h4>
+            <ul>
+                <li>Set your bet and number of mines.</li>
+                <li>Reveal gems to increase multiplier.</li>
+                <li>Cash out anytime to keep winnings.</li>
+                <li>Hitting a mine loses the bet.</li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Wallet Modal -->
+    <div class="modal-backdrop" id="walletModalBackdrop"></div>
+    <div class="modal" id="walletModal">
+        <div class="modal__header">
+            <h3 class="modal__title">Connect Wallet</h3>
+            <button class="modal__close" id="closeWalletModal">&times;</button>
+        </div>
+        <div class="wallet-modal__options">
+            <button class="wallet-option" data-wallet="lace">
+                <div class="wallet-option__icon">🔷</div>
+                <div>
+                    <div class="wallet-option__name">Lace</div>
+                    <div class="wallet-option__description">Cardano light wallet</div>
+                </div>
+            </button>
+            <button class="wallet-option" data-wallet="eternl">
+                <div class="wallet-option__icon">🟣</div>
+                <div>
+                    <div class="wallet-option__name">Eternl</div>
+                    <div class="wallet-option__description">Multi-account DeFi wallet</div>
+                </div>
+            </button>
+            <button class="wallet-option" data-wallet="vespr">
+                <div class="wallet-option__icon">🔶</div>
+                <div>
+                    <div class="wallet-option__name">Vespr</div>
+                    <div class="wallet-option__description">Mobile-first wallet</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="../styles/components.css">
+    <script src="../scripts/config.js"></script>
+    <script src="../scripts/deposit-modal.js"></script>
+    <script src="../scripts/main.js"></script>
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/fairness.js"></script>
+    <script src="../scripts/games/mines.js"></script>
+</body>
+
+</html>

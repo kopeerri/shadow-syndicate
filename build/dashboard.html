@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Deck | Shadow Syndicate</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <style>
+        .demo-banner {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
+            background: linear-gradient(90deg, #FFB000, #FF6B00, #FFB000);
+            background-size: 200% auto; animation: shimmer-banner 3s linear infinite;
+            color: #000; text-align: center; padding: 6px 20px;
+            font-family: 'Share Tech Mono', monospace; font-size: 0.75rem;
+            font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+        }
+        @keyframes shimmer-banner { to { background-position: 200% center; } }
+        body.has-demo-banner .header { top: 30px; }
+        body.has-demo-banner .dashboard { padding-top: calc(var(--header-height, 64px) + 50px); }
+        .dm-deposit-btn { margin-left: var(--space-2); cursor: pointer; color: var(--holo-purple); font-weight: 700; font-size: var(--text-sm); background: none; border: 1px solid rgba(192,132,252,0.3); border-radius: var(--radius-sm); padding: 2px 8px; }
+        .dm-deposit-btn:hover { background: rgba(192,132,252,0.15); }
+    </style>
+</head>
+<body class="has-demo-banner">
+    <div class="demo-banner">⬡ SHADOW SYNDICATE — $SHADE betting. Connect your Cardano wallet.</div>
+
+    <header class="header">
+        <div class="header__inner">
+            <a href="index.html" class="header__logo">
+                <img src="logo.png" alt="Shadow Syndicate"><span class="header__logo-text">Shadow Syndicate</span>
+            </a>
+            <nav class="header__nav">
+                <a href="index.html#games" class="header__nav-link">Games</a>
+                <a href="deposit.html" class="header__nav-link">Deposit</a>
+                <a href="withdraw.html" class="header__nav-link">Withdraw</a>
+                <a href="dashboard.html" class="header__nav-link active">Terminal</a>
+            </nav>
+            <div class="header__actions">
+                <div class="status-indicator status-indicator--disconnected" id="connectionStatus"><span class="status-indicator__dot"></span><span>Offline</span></div>
+                <button class="btn btn-cyan btn-sm" id="connectWalletBtn"><span>⬡</span> Connect</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <div class="dashboard__container">
+            <div class="dashboard__header">
+                <div>
+                    <h1 class="dashboard__title glitch" data-text="Command Deck">Command Deck</h1>
+                    <p class="dashboard__subtitle">Your wallet, balance, game history, and deposit tracking.</p>
+                </div>
+                <div class="dashboard__header-stats">
+                    <div class="data-readout">
+                        <span class="data-readout__label">Wallet</span>
+                        <span class="data-readout__value data-readout__value--mono" id="walletAddressDisplay">Not Connected</span>
+                    </div>
+                    <div class="data-readout data-readout-lg">
+                        <span class="data-readout__label">Balance</span>
+                        <span class="data-readout__value" data-balance>---</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="dashboard__quick-stats">
+                <div class="stat-card">
+                    <div class="stat-card__icon">🎰</div>
+                    <div class="stat-card__info">
+                        <span class="stat-card__value" id="totalWagers">0</span>
+                        <span class="stat-card__label">Total Plays</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-card--green">
+                    <div class="stat-card__icon">📈</div>
+                    <div class="stat-card__info">
+                        <span class="stat-card__value" id="totalProfit">+0</span>
+                        <span class="stat-card__label">Net Profit</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-card--amber">
+                    <div class="stat-card__icon">🏆</div>
+                    <div class="stat-card__info">
+                        <span class="stat-card__value" id="biggestWin">0</span>
+                        <span class="stat-card__label">Biggest Win</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-card--cyan">
+                    <div class="stat-card__icon">💎</div>
+                    <div class="stat-card__info">
+                        <span class="stat-card__value" id="totalDeposited">0</span>
+                        <span class="stat-card__label">Total Deposited</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard__grid">
+                <!-- Games Panel -->
+                <section class="dashboard__panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title"><span class="panel-title__icon">◈</span>Games</h2>
+                    </div>
+                    <div class="games-list">
+                        <a href="games/blackjack.html" class="game-item">
+                            <div class="game-item__icon">🂡</div>
+                            <div class="game-item__info"><span class="game-item__name">Blackjack</span><span class="game-item__status badge badge--green">Live</span></div>
+                            <span class="game-item__arrow">→</span>
+                        </a>
+                        <a href="games/dice.html" class="game-item">
+                            <div class="game-item__icon">🎲</div>
+                            <div class="game-item__info"><span class="game-item__name">Dice</span><span class="game-item__status badge badge--green">Live</span></div>
+                            <span class="game-item__arrow">→</span>
+                        </a>
+                        <a href="games/mines.html" class="game-item">
+                            <div class="game-item__icon">💣</div>
+                            <div class="game-item__info"><span class="game-item__name">Mines</span><span class="game-item__status badge badge--green">Live</span></div>
+                            <span class="game-item__arrow">→</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Leaderboard -->
+                <section class="dashboard__panel dashboard__panel--wide">
+                    <div class="panel-header">
+                        <h2 class="panel-title"><span class="panel-title__icon">🏆</span>Leaderboard</h2>
+                    </div>
+                    <div class="leaderboard-table">
+                        <table style="width:100%;border-collapse:collapse;text-align:left;">
+                            <thead>
+                                <tr style="border-bottom:1px solid var(--void-border);">
+                                    <th style="padding:var(--space-4);color:var(--text-muted);font-size:var(--text-xs);">RANK</th>
+                                    <th style="padding:var(--space-4);color:var(--text-muted);font-size:var(--text-xs);">PLAYER</th>
+                                    <th style="padding:var(--space-4);color:var(--text-muted);font-size:var(--text-xs);text-align:right;">BALANCE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Deposit History -->
+                <section class="dashboard__panel dashboard__panel--wide">
+                    <div class="panel-header">
+                        <h2 class="panel-title"><span class="panel-title__icon">💎</span>Deposits</h2>
+                        <button class="btn btn-ghost btn-sm dm-deposit-btn" onclick="window.location='deposit.html'">+ Deposit</button>
+                    </div>
+                    <div class="terminal-log" id="depositLog" style="max-height:200px;overflow-y:auto;">
+                        <div class="terminal-log__line">
+                            <span class="terminal-log__message">Connect wallet to see deposit history.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Activity Log -->
+                <section class="dashboard__panel dashboard__panel--wide">
+                    <div class="panel-header">
+                        <h2 class="panel-title"><span class="panel-title__icon">📋</span>Activity</h2>
+                        <button class="btn btn-ghost btn-sm" id="clearLogsBtn">Clear</button>
+                    </div>
+                    <div class="terminal-log" id="activityLog">
+                        <div class="terminal-log__line">
+                            <span class="terminal-log__timestamp">--:--:--</span>
+                            <span class="terminal-log__message">Awaiting wallet connection...</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="terminal-footer">
+                <div class="terminal-footer__status">
+                    <span class="terminal-footer__indicator"></span>
+                    <span>Node Zero · Encryption Active · $SHADE Live</span>
+                </div>
+                <div class="terminal-footer__version">Shadow Syndicate v1.0</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Wallet Modal -->
+    <div class="modal-backdrop" id="walletModalBackdrop"></div>
+    <div class="modal" id="walletModal">
+        <div class="modal__header"><h3 class="modal__title">Connect Wallet</h3><button class="modal__close" id="closeWalletModal">&times;</button></div>
+        <p class="text-muted" style="font-size:var(--text-sm);padding:0 var(--space-4);">Connect your Cardano wallet to play and deposit $SHADE.</p>
+        <div class="wallet-modal__options">
+            <div class="wallet-option" data-wallet="lace"><div class="wallet-option__icon"><span style="font-size:24px;">L</span></div><div class="wallet-option__info"><div class="wallet-option__name">Lace</div><div class="wallet-option__description">Cardano Wallet</div></div></div>
+            <div class="wallet-option" data-wallet="eternl"><div class="wallet-option__icon"><span style="font-size:24px;">E</span></div><div class="wallet-option__info"><div class="wallet-option__name">Eternl</div><div class="wallet-option__description">Advanced Cardano</div></div></div>
+            <div class="wallet-option" data-wallet="vespr"><div class="wallet-option__icon"><span style="font-size:24px;">V</span></div><div class="wallet-option__info"><div class="wallet-option__name">Vespr</div><div class="wallet-option__description">Mobile-First</div></div></div>
+        </div>
+    </div>
+
+    <script src="scripts/config.js"></script>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/deposit-modal.js"></script>
+    <script src="scripts/dashboard.js"></script>
+</body>
+</html>

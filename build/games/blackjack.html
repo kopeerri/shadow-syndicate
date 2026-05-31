@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow Syndicate | Holo-Blackjack</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/games.css">
+    <style>
+        .demo-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9998;
+            background: linear-gradient(90deg, #FFB000, #FF6B00, #FFB000);
+            background-size: 200% auto;
+            animation: shimmer-banner 3s linear infinite;
+            color: #000;
+            text-align: center;
+            padding: 6px 20px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase
+        }
+
+        @keyframes shimmer-banner {
+            to {
+                background-position: 200% center
+            }
+        }
+
+        body.has-demo-banner .table-header {
+            top: 30px
+        }
+
+        .demo-mode-pill {
+            position: fixed;
+            top: 38px;
+            right: 16px;
+            z-index: 9997;
+            padding: 3px 12px;
+            background: rgba(255, 176, 0, 0.15);
+            border: 1px solid rgba(255, 176, 0, 0.3);
+            border-radius: 999px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.65rem;
+            color: #FFB000;
+            text-transform: uppercase;
+            letter-spacing: 0.1em
+        }
+        .deposit-btn {
+            margin-left: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #2DD4BF;
+            background: rgba(45, 212, 191, 0.15);
+            color: #2DD4BF;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+        .deposit-btn:hover {
+            background: rgba(45, 212, 191, 0.3);
+            box-shadow: 0 0 8px rgba(45, 212, 191, 0.4);
+        }
+        .game-tabs { display: flex; gap: 2px; }
+        .game-tab { padding: 4px 14px; border-radius: var(--radius-sm) var(--radius-sm) 0 0; font-family: var(--font-display); font-size: 10px; font-weight: 600; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid transparent; border-bottom: 2px solid transparent; transition: all .2s; color: var(--text-muted); background: transparent; }
+        .game-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.06); }
+        .game-tab--active { color: var(--holo-teal) !important; border-bottom-color: var(--holo-teal) !important; background: rgba(45,212,191,0.06) !important; }
+        .game-tab__icon { margin-right: 4px; font-size: 12px; }
+    </style>
+</head>
+
+<body class="game-body has-demo-banner">
+
+    <!-- Demo Banner -->
+    <div class="demo-banner">⬡ SHADOW SYNDICATE — $SHADE betting on Cardano.</div>
+    <!-- LIVE indicator removed for v1.0 -->
+
+    <!-- Background Ambience -->
+    <div class="ambient-glow"></div>
+    <div class="holographic-grid"></div>
+
+    <!-- Main Game Interface -->
+    <main class="holo-table">
+
+        <!-- Dealer Portrait Sidebar -->
+        <aside class="dealer-sidebar" id="dealerSidebar">
+            <div class="dealer-sidebar__header">
+                <span class="dealer-sidebar__title">DEALERS</span>
+            </div>
+            <div class="dealer-sidebar__portraits" id="dealerPortraits">
+                <!-- Portraits injected by JS -->
+            </div>
+        </aside>
+
+        <!-- Dealer Showcase (Large Image) -->
+        <div class="dealer-showcase" id="dealerShowcase">
+            <img src="../assets/Dealers/Nova.png" alt="Dealer" class="dealer-showcase__img" id="dealerShowcaseImg">
+            <div class="dealer-showcase__name" id="dealerShowcaseName">NOVA</div>
+        </div>
+
+        <!-- Dealer Speech Panel (Right Side) -->
+        <aside class="dealer-speech-panel" id="dealerSpeechPanel">
+            <div class="dealer-speech-bubble" id="dealerSpeech">
+                <!-- Speech injected by JS -->
+            </div>
+            <div class="dealer-speech-name" id="dealerName">NOVA</div>
+        </aside>
+
+        <!-- Header: Logo & Status -->
+        <header class="table-header" id="gameHeader">
+            <a href="../index.html" class="logo-link brand-display">
+                <img src="../logo.png" alt="Shadow Syndicate" class="brand-logo">
+                <div class="brand-text">
+                    <span class="brand-name">SHADOW</span>
+                    <span class="brand-sub">SYNDICATE</span>
+                </div>
+            </a>
+
+            <div class="system-status">
+                <div class="status-item">
+                    <span class="label">GAMES</span>
+                    <div class="game-tabs">
+                        <a href="blackjack.html" class="game-tab game-tab--active"><span class="game-tab__icon">🂡</span>Blackjack</a>
+                        <a href="dice.html" class="game-tab"><span class="game-tab__icon">🎲</span>Dice</a>
+                        <a href="mines.html" class="game-tab"><span class="game-tab__icon">💣</span>Mines</a>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <span class="label">BALANCE</span>
+                    <span class="value" id="balanceDisplay">0.00 SHADE</span>
+                    <button class="deposit-btn" title="Deposit $SHADE" onclick="DepositModal.open()">+</button>
+                </div>
+            </div>
+            <button class="header-toggle" id="headerToggle" aria-label="Toggle header"></button>
+        </header>
+
+        <!-- Dealer Zone -->
+        <section class="dealer-zone">
+            <div class="dealer-score-pill hidden" id="dealerScoreDisplay">
+                <span class="label">SHOWING</span>
+                <span class="score" id="dealerScore">--</span>
+            </div>
+
+            <div class="card-row" id="dealerCards">
+                <!-- Cards injected here -->
+            </div>
+        </section>
+
+        <!-- Center Stage (Result Modal Only) -->
+        <div class="center-stage">
+            <!-- Result Overlay -->
+            <div class="result-modal hidden" id="resultPanel">
+                <div class="modal-glass">
+                    <h2 class="result-title" id="resultTitle">WINNER</h2>
+                    <div class="result-amount" id="resultAmount">+500</div>
+                    <button class="holo-btn primary-btn" id="newGameBtn">PLAY AGAIN</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Zone -->
+        <section class="player-zone">
+            <div class="card-row" id="playerCards">
+                <!-- Cards injected here -->
+            </div>
+
+            <div class="player-hud">
+                <div class="score-display">
+                    <span class="label">YOUR HAND</span>
+                    <span class="score" id="playerScore">--</span>
+                </div>
+                <div class="bet-display">
+                    <span class="label">CURRENT BET</span>
+                    <span class="amount" id="currentBet">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Floating Control Deck -->
+        <div class="control-deck">
+
+            <!-- Betting Controls (Phase 1) -->
+            <div class="control-group" id="bettingControls">
+                <div class="chip-selector">
+                    <button class="chip" data-value="1000">1K</button>
+                    <button class="chip" data-value="5000">5K</button>
+                    <button class="chip" data-value="10000">10K</button>
+                    <button class="chip" data-value="25000">25K</button>
+                    <button class="chip" data-value="50000">50K</button>
+                    <button class="chip chip--max" data-value="max">MAX</button>
+                </div>
+                <div class="action-buttons">
+                    <button class="holo-btn secondary-btn" id="clearBtn">CLEAR</button>
+                    <button class="holo-btn primary-btn" id="dealBtn">DEAL</button>
+                </div>
+            </div>
+
+            <!-- Play Controls (Phase 2) -->
+            <div class="control-group hidden" id="playControls">
+                <button class="holo-btn action-btn" id="hitBtn">HIT</button>
+                <button class="holo-btn action-btn" id="standBtn">STAND</button>
+                <button class="holo-btn action-btn" id="doubleBtn">DOUBLE</button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Wallet Modal -->
+    <div class="modal-backdrop" id="walletModalBackdrop"></div>
+    <div class="modal" id="walletModal">
+        <div class="modal__header">
+            <h3 class="modal__title">Connect Wallet</h3>
+            <button class="modal__close" id="closeWalletModal">&times;</button>
+        </div>
+        <div class="wallet-modal__options">
+            <button class="wallet-option" data-wallet="lace">
+                <div class="wallet-option__icon">🔷</div>
+                <div>
+                    <div class="wallet-option__name">Lace</div>
+                    <div class="wallet-option__description">Cardano light wallet</div>
+                </div>
+            </button>
+            <button class="wallet-option" data-wallet="eternl">
+                <div class="wallet-option__icon">🟣</div>
+                <div>
+                    <div class="wallet-option__name">Eternl</div>
+                    <div class="wallet-option__description">Multi-account DeFi wallet</div>
+                </div>
+            </button>
+            <button class="wallet-option" data-wallet="vespr">
+                <div class="wallet-option__icon">🔶</div>
+                <div>
+                    <div class="wallet-option__name">Vespr</div>
+                    <div class="wallet-option__description">Mobile-first wallet</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="../styles/components.css">
+    <script src="../scripts/config.js"></script>
+    <script src="../scripts/deposit-modal.js"></script>
+    <script src="../scripts/main.js"></script>
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/fairness.js"></script>
+    <script src="../scripts/games/blackjack.js"></script>
+</body>
+
+</html>

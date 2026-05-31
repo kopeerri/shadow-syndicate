@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Shadow Syndicate — $SHADE-native casino on Cardano. Provably fair Blackjack, Dice, and Mines.">
+  <title>The Shadow Syndicate | Enter Node Zero</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <style>
+    /* Demo Banner */
+    .demo-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9998;
+      background: linear-gradient(90deg, #FFB000, #FF6B00, #FFB000);
+      background-size: 200% auto;
+      animation: shimmer-banner 3s linear infinite;
+      color: #000;
+      text-align: center;
+      padding: 6px 20px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .demo-banner a {
+      color: #000;
+      text-decoration: underline;
+      margin-left: 8px;
+    }
+
+    @keyframes shimmer-banner {
+      to {
+        background-position: 200% center;
+      }
+    }
+
+    body.has-demo-banner .header {
+      top: 30px;
+    }
+
+    body.has-demo-banner .hero {
+      padding-top: 130px;
+    }
+
+    /* Midnight Badge */
+    .midnight-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(45, 212, 191, 0.08);
+      border: 1px solid rgba(45, 212, 191, 0.3);
+      border-radius: 999px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      color: #2DD4BF;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+      animation: pulse-badge 3s ease-in-out infinite;
+    }
+
+    .midnight-badge__dot {
+      width: 6px;
+      height: 6px;
+      background: #2DD4BF;
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-badge {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.2);
+      }
+
+      50% {
+        box-shadow: 0 0 20px 2px rgba(45, 212, 191, 0.15);
+      }
+    }
+
+    @keyframes pulse-dot {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+      }
+    }
+
+    /* How It Works */
+    .how-it-works {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      counter-reset: step;
+    }
+
+    .step-card {
+      position: relative;
+      background: rgba(20, 25, 35, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      counter-increment: step;
+    }
+
+    .step-card:hover {
+      border-color: rgba(45, 212, 191, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .step-card::before {
+      content: counter(step, decimal-leading-zero);
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #C084FC, #60A5FA);
+      color: #000;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 999px;
+    }
+
+    .step-card__icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .step-card__title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      color: #F8FAFC;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-card__desc {
+      color: #94A3B8;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    /* Demo Label for Stats */
+    .demo-data-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      background: rgba(255, 176, 0, 0.1);
+      border: 1px solid rgba(255, 176, 0, 0.3);
+      border-radius: 999px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: #FFB000;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .demo-data-label__dot {
+      width: 5px;
+      height: 5px;
+      background: #FFB000;
+      border-radius: 50%;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    /* Roadmap */
+    .roadmap-timeline {
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .roadmap-timeline::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #C084FC, #60A5FA, rgba(45, 212, 191, 0.3));
+    }
+
+    .roadmap-item {
+      position: relative;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: rgba(20, 25, 35, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .roadmap-item:hover {
+      border-color: rgba(192, 132, 252, 0.3);
+    }
+
+    .roadmap-item::before {
+      content: '';
+      position: absolute;
+      left: -34px;
+      top: 1.8rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #C084FC;
+      box-shadow: 0 0 12px rgba(192, 132, 252, 0.5);
+    }
+
+    .roadmap-item--active::before {
+      background: #2DD4BF;
+      box-shadow: 0 0 12px rgba(45, 212, 191, 0.5);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    .roadmap-item--future {
+      opacity: 0.6;
+    }
+
+    .roadmap-item--future::before {
+      background: #64748b;
+      box-shadow: none;
+    }
+
+    .roadmap-item__phase {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      color: #C084FC;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.3rem;
+    }
+
+    .roadmap-item__title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      color: #F8FAFC;
+      margin-bottom: 0.4rem;
+    }
+
+    .roadmap-item__desc {
+      color: #94A3B8;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .roadmap-item__badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+
+    .roadmap-item__badge--live {
+      background: rgba(45, 212, 191, 0.15);
+      color: #2DD4BF;
+      border: 1px solid rgba(45, 212, 191, 0.3);
+    }
+
+    .roadmap-item__badge--progress {
+      background: rgba(255, 176, 0, 0.15);
+      color: #FFB000;
+      border: 1px solid rgba(255, 176, 0, 0.3);
+    }
+
+    .roadmap-item__badge--soon {
+      background: rgba(100, 116, 139, 0.15);
+      color: #94A3B8;
+      border: 1px solid rgba(100, 116, 139, 0.3);
+    }
+
+    /* Trust Badges */
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .trust-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: #64748b;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .trust-badge__icon {
+      font-size: 1.5rem;
+      opacity: 0.7;
+    }
+
+    /* Holo-Chrome Overrides for Landing Page */
+    body {
+      background: radial-gradient(ellipse at center top, #1a1a2e 0%, #050505 100%);
+      color: #E2E8F0;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 20px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80vw;
+      height: 80vw;
+      background: radial-gradient(circle, rgba(192, 132, 252, 0.08), transparent 70%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero__logo {
+      width: 180px;
+      height: auto;
+      margin-bottom: 2rem;
+      filter: drop-shadow(0 0 30px rgba(192, 132, 252, 0.3));
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .hero__title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, #e2e8f0 20%, #c084fc 40%, #60a5fa 60%, #e2e8f0 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: text-shine 3s linear infinite, glitch 8s ease-in-out infinite;
+    }
+
+    @keyframes text-shine {
+      to {
+        background-position: 200% center;
+      }
+    }
+
+    .hero__subtitle {
+      font-size: 1.1rem;
+      color: #94A3B8;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+
+    .hero__actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero__scroll {
+      position: absolute;
+      bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #64748b;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2rem;
+    }
+
+    .hero__scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, #c084fc, transparent);
+      margin-top: 0.5rem;
+    }
+
+    /* Sections */
+    .section {
+      padding: 100px 20px;
+      position: relative;
+    }
+
+    .section__header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section__label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: #c084fc;
+      text-transform: uppercase;
+      letter-spacing: 0.2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .section__title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      color: #F8FAFC;
+      margin-bottom: 1rem;
+    }
+
+    .section__description {
+      color: #94A3B8;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Features */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature {
+      background: rgba(20, 25, 35, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 2.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .feature:hover {
+      border-color: rgba(192, 132, 252, 0.3);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature__icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 1.5rem;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(192, 132, 252, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feature__icon-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .feature:hover .feature__icon-img {
+      transform: scale(1.1);
+    }
+
+    .feature__title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      color: #F8FAFC;
+      margin-bottom: 1rem;
+    }
+
+    .feature__description {
+      color: #94A3B8;
+      line-height: 1.7;
+    }
+
+    /* Games Grid */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .game-card {
+      background: rgba(20, 25, 35, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .game-card:hover {
+      border-color: var(--holo-teal);
+      transform: translateY(-8px);
+      box-shadow: 0 0 40px rgba(45, 212, 191, 0.15);
+    }
+
+    .game-card__image {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(96, 165, 250, 0.1));
+      font-size: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-card__artwork {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease, filter 0.3s ease;
+    }
+
+    .game-card:hover .game-card__artwork {
+      transform: scale(1.08);
+      filter: brightness(1.1);
+    }
+
+    .game-card__badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 4px 12px;
+      background: var(--holo-teal);
+      color: #000;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-radius: 20px;
+    }
+
+    .game-card__content {
+      padding: 1.5rem 2rem 2rem;
+    }
+
+    .game-card__label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: #c084fc;
+      text-transform: uppercase;
+      letter-spacing: 0.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .game-card__title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      color: #F8FAFC;
+      margin-bottom: 0.75rem;
+    }
+
+    .game-card__description {
+      color: #94A3B8;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .game-card__stats {
+      display: flex;
+      gap: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 1.5rem;
+    }
+
+    .game-card__stat-label {
+      font-size: 0.7rem;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .game-card__stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      color: var(--holo-teal);
+    }
+
+    /* Stats Section */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .stat-item__value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      background: var(--gradient-holo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-item__label {
+      font-size: 0.85rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.1rem;
+      margin-top: 0.5rem;
+    }
+
+    /* CTA Section */
+    .cta {
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    .cta__frame {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 60px 40px;
+      background: rgba(20, 25, 35, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      border-radius: 24px;
+    }
+
+    .cta__title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      color: #F8FAFC;
+      margin-bottom: 1rem;
+    }
+
+    .cta__description {
+      color: #94A3B8;
+      margin-bottom: 2rem;
+    }
+
+    /* Footer */
+    .footer {
+      background: rgba(5, 5, 5, 0.9);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 60px 20px 30px;
+    }
+
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto 3rem;
+    }
+
+    .footer__logo img {
+      height: 40px;
+      margin-bottom: 1rem;
+    }
+
+    .footer__tagline {
+      color: #64748b;
+      font-style: italic;
+    }
+
+    .footer__column-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      color: #c084fc;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .footer__links {
+      list-style: none;
+    }
+
+    .footer__link {
+      display: block;
+      padding: 0.5rem 0;
+      color: #94A3B8;
+      transition: color 0.2s;
+    }
+
+    .footer__link:hover {
+      color: var(--holo-teal);
+    }
+
+    .footer__bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer__copyright {
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+
+    .footer__socials {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .footer__social {
+      font-size: 1.25rem;
+      color: #64748b;
+      transition: color 0.2s;
+    }
+
+    .footer__social:hover {
+      color: var(--holo-purple);
+    }
+
+    @media (max-width: 768px) {
+      .footer__grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .footer__bottom {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="has-demo-banner">
+
+  <!-- Demo Banner -->
+  <div class="demo-banner">
+    ⬡ SHADOW SYNDICATE — $SHADE casino on Cardano. Connect wallet to play.
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        <img src="logo.png" alt="Shadow Syndicate Logo">
+        <span class="header__logo-text">Shadow Syndicate</span>
+      </a>
+
+      <nav class="header__nav">
+        <a href="#games" class="header__nav-link">Games</a>
+        <a href="deposit.html" class="header__nav-link">Deposit</a>
+        <a href="withdraw.html" class="header__nav-link">Withdraw</a>
+        <a href="#features" class="header__nav-link">Features</a>
+        <a href="#stats" class="header__nav-link">Dark Pool</a>
+        <a href="#roadmap" class="header__nav-link">Roadmap</a>
+        <a href="dashboard.html" class="header__nav-link">Terminal</a>
+      </nav>
+
+      <div class="header__actions">
+        <span class="header__balance" id="headerBalance" style="display:none;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--holo-purple);font-weight:700;margin-right:var(--space-3);"></span>
+        <div class="status-indicator status-indicator--disconnected" id="connectionStatus">
+          <span class="status-indicator__dot"></span><span>Offline</span>
+        </div>
+        <button class="btn btn-cyan btn-sm" id="connectWalletBtn">
+          <span>⬡</span> Connect
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="midnight-badge">
+      <span class="midnight-badge__dot"></span>
+      Built on Cardano
+    </div>
+    <img src="logo.png" alt="Shadow Syndicate" class="hero__logo">
+    <h1 class="hero__title">Shadow Syndicate</h1>
+    <p class="hero__subtitle">
+      The $SHADE-native casino on Cardano. Provably fair games with real on-chain deposits.
+      Connect your wallet, send $SHADE, and play instantly.
+    </p>
+    <div class="hero__actions">
+      <a href="#games" class="btn btn-primary btn-lg">Enter Node Zero</a>
+      <a href="#features" class="btn btn-secondary btn-lg">Learn More</a>
+    </div>
+    <div class="hero__scroll animate-scroll-bounce">
+      <span>Scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section" id="features" data-animate="fade-up">
+    <div class="section__header">
+      <span class="section__label">// Protocol Features</span>
+      <h2 class="section__title">Rational Privacy</h2>
+      <p class="section__description">
+        Decoupling integrity from confidentiality. Verify the game is fair without revealing your hand.
+      </p>
+    </div>
+
+    <div class="features" data-animate-stagger>
+      <div class="feature" data-animate-child>
+        <div class="feature__icon">
+          <img src="assets/zk proof.png" alt="Zero-Knowledge Proofs" class="feature__icon-img">
+        </div>
+        <h3 class="feature__title">Zero-Knowledge Proofs</h3>
+        <p class="feature__description">
+          Every wager verified cryptographically without exposing your wallet, balance, or betting patterns.
+        </p>
+      </div>
+
+      <div class="feature" data-animate-child>
+        <div class="feature__icon">
+          <img src="assets/prov fair.png" alt="Provably Fair" class="feature__icon-img">
+        </div>
+        <h3 class="feature__title">Provably Fair</h3>
+        <p class="feature__description">
+          Commit-reveal randomness with hash verification. The house cannot cheat—the proof is on-chain forever.
+        </p>
+      </div>
+
+      <div class="feature" data-animate-child>
+        <div class="feature__icon">
+          <img src="assets/gem.png" alt="NFT Access" class="feature__icon-img">
+        </div>
+        <h3 class="feature__title">NFT Access</h3>
+        <p class="feature__description">
+          Night Raiders unlock VIP tables, reduced house edges, and governance rights in the Syndicate.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section" id="how-it-works" data-animate="fade-up">
+    <div class="section__header">
+      <span class="section__label">// How It Works</span>
+      <h2 class="section__title">ZK-Verified Gaming</h2>
+      <p class="section__description">
+        Every game uses a cryptographic commit-reveal scheme. The house can't cheat, and the world can't see your hand.
+      </p>
+    </div>
+
+    <div class="how-it-works" data-animate-stagger>
+      <div class="step-card" data-animate-child>
+        <div class="step-card__icon">🔗</div>
+        <h3 class="step-card__title">Connect Wallet</h3>
+        <p class="step-card__desc">Connect your Cardano wallet. Your bets are provably fair and verifiable.</p>
+      </div>
+      <div class="step-card" data-animate-child>
+        <div class="step-card__icon">🎲</div>
+        <h3 class="step-card__title">Place Your Bet</h3>
+        <p class="step-card__desc">Choose your game and wager. A client seed is generated locally — the server never
+          sees it.</p>
+      </div>
+      <div class="step-card" data-animate-child>
+        <div class="step-card__icon">🔐</div>
+        <h3 class="step-card__title">ZK Proof Generated</h3>
+        <p class="step-card__desc">Your device generates a zero-knowledge proof. The game result is verified without
+          revealing your data.</p>
+      </div>
+      <div class="step-card" data-animate-child>
+        <div class="step-card__icon">💎</div>
+        <h3 class="step-card__title">Collect Winnings</h3>
+        <p class="step-card__desc">Winnings are settled instantly on-chain. Your wallet, bet amount, and strategy remain
+          invisible.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Games -->
+  <section class="section" id="games" data-animate="fade-up">
+    <div class="section__header">
+      <span class="section__label">// Deploy Capital</span>
+      <h2 class="section__title">The Games</h2>
+      <p class="section__description">
+        Three ways to test your luck in Node Zero. All outcomes verified by ZK circuits.
+      </p>
+    </div>
+
+    <div class="games-grid" data-animate-stagger>
+      <!-- Blackjack -->
+      <article class="game-card" data-animate-child>
+        <div class="game-card__image">
+          <img src="assets/Blind Man's Bluff.png" alt="Blind Man's Bluff" class="game-card__artwork">
+          <span class="game-card__badge animate-pulse-badge">Live</span>
+        </div>
+        <div class="game-card__content">
+          <span class="game-card__label">Card Game</span>
+          <h3 class="game-card__title">Blind Man's Bluff</h3>
+          <p class="game-card__description">
+            Classic Blackjack with ZK-verified deck shuffling. Your hand is encrypted.
+          </p>
+          <div class="game-card__stats">
+            <div><span class="game-card__stat-label">House Edge</span>
+              <div class="game-card__stat-value">0.5%</div>
+            </div>
+            <div><span class="game-card__stat-label">Max Bet</span>
+              <div class="game-card__stat-value">10K</div>
+            </div>
+          </div>
+          <a href="games/blackjack.html" class="btn btn-primary" style="width:100%">Play Now</a>
+        </div>
+      </article>
+
+      <!-- Dice -->
+      <article class="game-card" data-animate-child>
+        <div class="game-card__image">
+          <img src="assets/dice.png" alt="Quantum Entropy" class="game-card__artwork">
+          <span class="game-card__badge animate-pulse-badge">Live</span>
+        </div>
+        <div class="game-card__content">
+          <span class="game-card__label">Probability</span>
+          <h3 class="game-card__title">Quantum Entropy</h3>
+          <p class="game-card__description">
+            Set your target, call the hash. Pure mathematics powered by dual-seed commit-reveal.
+          </p>
+          <div class="game-card__stats">
+            <div><span class="game-card__stat-label">House Edge</span>
+              <div class="game-card__stat-value">1%</div>
+            </div>
+            <div><span class="game-card__stat-label">Max Multi</span>
+              <div class="game-card__stat-value">99x</div>
+            </div>
+          </div>
+          <a href="games/dice.html" class="btn btn-primary" style="width:100%">Play Now</a>
+        </div>
+      </article>
+
+      <!-- Mines -->
+      <article class="game-card" data-animate-child>
+        <div class="game-card__image">
+          <img src="assets/mines grid.png" alt="Grid Breach" class="game-card__artwork">
+          <span class="game-card__badge animate-pulse-badge">Live</span>
+        </div>
+        <div class="game-card__content">
+          <span class="game-card__label">Strategy</span>
+          <h3 class="game-card__title">Grid Breach</h3>
+          <p class="game-card__description">
+            Navigate the minefield. Each safe cell increases your multiplier. Hit a mine and connection severed.
+          </p>
+          <div class="game-card__stats">
+            <div><span class="game-card__stat-label">Grid Size</span>
+              <div class="game-card__stat-value">5×5</div>
+            </div>
+            <div><span class="game-card__stat-label">Max Multi</span>
+              <div class="game-card__stat-value">24x</div>
+            </div>
+          </div>
+          <a href="games/mines.html" class="btn btn-primary" style="width:100%">Play Now</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="section" id="stats">
+    <div class="section__header">
+      <span class="section__label">// The Dark Pool</span>
+      <h2 class="section__title">Syndicate Treasury</h2>
+      <p class="section__description">
+        Stake your position. Become the house. Earn yield from every wager while your assets remain ZK-shielded.
+      </p>
+
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-item__value">🔒</div>
+        <div class="stat-item__label">ZK-Shielded Bankroll</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-item__value">👥</div>
+        <div class="stat-item__label">Community Governed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-item__value">⚡</div>
+        <div class="stat-item__label">Instant Settlement</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-item__value">∞</div>
+        <div class="stat-item__label">Privacy Level</div>
+      </div>
+    </div>
+
+    <div class="trust-badges">
+      <div class="trust-badge">
+        <span class="trust-badge__icon">🔐</span>
+        ZK-Verified
+      </div>
+      <div class="trust-badge">
+        <span class="trust-badge__icon">⚡</span>
+        Provably Fair
+      </div>
+      <div class="trust-badge">
+        <span class="trust-badge__icon">🛡️</span>
+        Non-Custodial
+      </div>
+      <div class="trust-badge">
+        <span class="trust-badge__icon">🌐</span>
+        Cardano Mainnet
+      </div>
+    </div>
+
+    <div class="text-center mt-8">
+      <a href="dashboard.html#staking" class="btn btn-amber btn-lg">Enter Dark Pool</a>
+    </div>
+  </section>
+
+  <!-- Roadmap -->
+  <section class="section" id="roadmap" data-animate="fade-up">
+    <div class="section__header">
+      <span class="section__label">// Mission Trajectory</span>
+      <h2 class="section__title">Roadmap</h2>
+      <p class="section__description">
+        From concept to Node Zero. Where we are and where we're headed.
+      </p>
+    </div>
+
+    <div class="roadmap-timeline">
+      <div class="roadmap-item roadmap-item--active">
+        <div class="roadmap-item__phase">Phase 01 — Foundation</div>
+        <h3 class="roadmap-item__title">Concept Demo & Community</h3>
+        <p class="roadmap-item__desc">Full-featured casino with $SHADE deposits, withdrawals, provably fair engine, and brand identity.</p>
+        <span class="roadmap-item__badge roadmap-item__badge--live">● Live Now</span>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-item__phase">Phase 02 — Smart Contracts</div>
+        <h3 class="roadmap-item__title">Cardano Integration</h3>
+        <p class="roadmap-item__desc">Deploy smart contracts on Cardano. ZK-verified game logic,
+          commit-reveal randomness, and Lace wallet integration.</p>
+        <span class="roadmap-item__badge roadmap-item__badge--progress">In Development</span>
+      </div>
+      <div class="roadmap-item roadmap-item--future">
+        <div class="roadmap-item__phase">Phase 03 — Dark Pool</div>
+        <h3 class="roadmap-item__title">Staking & Bankroll Protocol</h3>
+        <p class="roadmap-item__desc">Launch the shielded staking mechanism. Night Raiders NFT holders become the house
+          with ZK-verified, non-custodial staking.</p>
+        <span class="roadmap-item__badge roadmap-item__badge--soon">Q3 2026</span>
+      </div>
+      <div class="roadmap-item roadmap-item--future">
+        <div class="roadmap-item__phase">Phase 04 — Mainnet</div>
+        <h3 class="roadmap-item__title">Full Launch on Cardano</h3>
+        <p class="roadmap-item__desc">Mainnet deployment with $SHADE wagering, NFT trait bonuses, governance DAO,
+          and multi-game expansion.</p>
+        <span class="roadmap-item__badge roadmap-item__badge--soon">Q4 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta__frame">
+      <h2 class="cta__title">Ready to Disappear?</h2>
+      <p class="cta__description">
+        Connect a Cardano wallet to play with real $SHADE. Blackjack, Dice, and Mines — all provably fair.
+      </p>
+      <button class="btn btn-primary btn-lg" id="ctaConnectBtn">Establish Ghost Link</button>
+      <p style="margin-top: 1rem; font-size: 0.75rem; color: #64748b; font-family: 'Share Tech Mono', monospace;">No
+        real funds required · Demo mode available</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <div class="footer__logo">
+          <img src="logo.png" alt="Shadow Syndicate">
+        </div>
+        <p class="footer__tagline">"The Watchers are blind here."</p>
+      </div>
+
+      <div class="footer__column">
+        <h4 class="footer__column-title">Games</h4>
+        <ul class="footer__links">
+          <li><a href="games/blackjack.html" class="footer__link">Blind Man's Bluff</a></li>
+          <li><a href="games/dice.html" class="footer__link">Quantum Entropy</a></li>
+          <li><a href="games/mines.html" class="footer__link">Grid Breach</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__column">
+        <h4 class="footer__column-title">Protocol</h4>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Documentation</a></li>
+          <li><a href="#" class="footer__link">Smart Contracts</a></li>
+          <li><a href="#" class="footer__link">Provably Fair</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__column">
+        <h4 class="footer__column-title">Community</h4>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Discord</a></li>
+          <li><a href="#" class="footer__link">Twitter/X</a></li>
+          <li><a href="#" class="footer__link">Governance</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copyright">© 2026 The Shadow Syndicate. $SHADE-native casino on Cardano.</p>
+      <div class="footer__socials">
+        <a href="#" class="footer__social" aria-label="Discord" title="Join Discord">💬</a>
+        <a href="#" class="footer__social" aria-label="Twitter" title="Follow on X">𝕏</a>
+        <a href="https://github.com/jkokbronou-oss/shaadoow" class="footer__social" aria-label="GitHub"
+          title="View on GitHub" target="_blank" rel="noopener">⌨</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Wallet Modal -->
+  <div class="modal-backdrop" id="walletModalBackdrop"></div>
+  <div class="modal" id="walletModal">
+    <div class="modal__header">
+      <h3 class="modal__title">Connect Wallet</h3>
+      <button class="modal__close" id="closeWalletModal">&times;</button>
+    </div>
+    <div class="wallet-modal__options">
+      <button class="wallet-option" data-wallet="lace">
+        <div class="wallet-option__icon">🔷</div>
+        <div>
+          <div class="wallet-option__name">Lace</div>
+          <div class="wallet-option__description">Cardano light wallet</div>
+        </div>
+      </button>
+      <button class="wallet-option" data-wallet="eternl">
+        <div class="wallet-option__icon">🟣</div>
+        <div>
+          <div class="wallet-option__name">Eternl</div>
+          <div class="wallet-option__description">Multi-account DeFi wallet</div>
+        </div>
+      </button>
+      <button class="wallet-option" data-wallet="vespr">
+        <div class="wallet-option__icon">🔶</div>
+        <div>
+          <div class="wallet-option__name">Vespr</div>
+          <div class="wallet-option__description">Mobile-first wallet</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Components CSS for Modal Styling -->
+  <link rel="stylesheet" href="styles/components.css">
+
+  <script src="scripts/config.js"></script>
+    <script src="scripts/api.js"></script>
+  <script src="scripts/main.js"></script>
+  <script src="scripts/scroll-animations.js"></script>
+
+
+</body>
+
+</html>

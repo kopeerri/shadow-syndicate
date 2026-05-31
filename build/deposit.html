@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit $SHADE | Shadow Syndicate</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        body { background: var(--void-black); min-height: 100vh; display: flex; flex-direction: column; color: var(--text-primary); }
+        .header { position: sticky; top: 0; z-index: 100; }
+        .dm-page { flex: 1; display: flex; align-items: center; justify-content: center; padding: var(--space-8) var(--space-4); }
+        .dm-card { background: var(--void-surface); border: 1px solid var(--void-border); border-radius: var(--radius-lg); padding: var(--space-6); max-width: 480px; width: 100%; backdrop-filter: blur(12px); }
+        .dm-card__title { font-family: var(--font-display); font-size: var(--text-xl); color: var(--holo-teal); text-align: center; margin-bottom: var(--space-1); }
+        .dm-card__sub { color: var(--text-muted); font-size: var(--text-sm); text-align: center; margin-bottom: var(--space-6); }
+        .dm-step { display: flex; align-items: flex-start; gap: var(--space-3); margin-bottom: var(--space-3); }
+        .dm-step__num { width: 22px; height: 22px; border-radius: 50%; background: rgba(45,212,191,0.12); color: var(--holo-teal); font-family: var(--font-mono); font-size: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .dm-step__text { color: var(--text-secondary); font-size: var(--text-sm); padding-top: 1px; }
+        .dm-addr { background: rgba(0,0,0,0.3); border: 1px dashed var(--void-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); font-family: var(--font-mono); font-size: 11px; color: var(--holo-teal); word-break: break-all; line-height: 1.5; margin-bottom: var(--space-3); user-select: all; }
+        .dm-bal-row { display: flex; justify-content: space-between; padding: var(--space-2) 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .dm-bal-row:last-child { border: none; }
+        .dm-bal-label { font-size: var(--text-xs); color: var(--text-muted); text-transform: uppercase; }
+        .dm-bal-val { font-family: var(--font-mono); font-size: var(--text-base); font-weight: 700; }
+        .dm-bal-val--purple { color: var(--holo-purple); }
+        .dm-bal-val--green { color: var(--state-success); }
+        .dm-status { font-family: var(--font-mono); font-size: var(--text-xs); margin-top: var(--space-3); min-height: 1.2em; text-align: center; }
+        .dm-copied { font-size: var(--text-xs); color: var(--state-success); opacity: 0; transition: opacity .3s; margin-left: var(--space-3); }
+        .dm-copied--show { opacity: 1; }
+        .policy-badge { display: inline-flex; align-items: center; gap: var(--space-2); background: rgba(192,132,252,0.06); border: 1px solid rgba(192,132,252,0.2); border-radius: var(--radius-md); padding: var(--space-1) var(--space-3); font-family: var(--font-mono); font-size: 10px; color: var(--holo-purple); margin-bottom: var(--space-6); word-break: break-all; justify-content: center; width: 100%; }
+        .btn-primary { display: block; width: 100%; padding: var(--space-3); background: linear-gradient(135deg, var(--holo-purple), var(--holo-blue)); color: #fff; border: none; border-radius: var(--radius-md); font-family: var(--font-display); font-weight: 700; cursor: pointer; margin-top: var(--space-3); transition: all .2s; }
+        .btn-primary:hover { box-shadow: 0 0 20px rgba(192,132,252,0.4); transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header__inner">
+            <a href="index.html" class="header__logo">
+                <img src="logo.png" alt="Shadow Syndicate"><span class="header__logo-text">Shadow Syndicate</span>
+            </a>
+            <nav class="header__nav">
+                <a href="index.html#games" class="header__nav-link">Games</a>
+                <a href="deposit.html" class="header__nav-link active">Deposit</a>
+                <a href="withdraw.html" class="header__nav-link">Withdraw</a>
+                <a href="dashboard.html" class="header__nav-link">Terminal</a>
+            </nav>
+            <div class="header__actions">
+                <div class="status-indicator status-indicator--disconnected" id="connectionStatus"><span class="status-indicator__dot"></span><span>Offline</span></div>
+                <button class="btn btn-cyan btn-sm" id="connectWalletBtn"><span>⬡</span> Connect</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dm-page">
+        <div class="dm-card">
+            <h1 class="dm-card__title">Deposit $SHADE</h1>
+            <p class="dm-card__sub">Send from your wallet, verify here, play instantly.</p>
+            <div class="policy-badge" id="policyBadge">Loading...</div>
+
+            <div class="dm-step"><span class="dm-step__num">1</span><span class="dm-step__text">Connect your Cardano wallet</span></div>
+
+            <div class="dm-bal-row"><span class="dm-bal-label">Wallet $SHADE</span><span class="dm-bal-val dm-bal-val--purple" id="walBal">--</span></div>
+            <div class="dm-bal-row"><span class="dm-bal-label">Casino Balance</span><span class="dm-bal-val dm-bal-val--purple" id="casBal">0</span></div>
+            <div class="dm-bal-row"><span class="dm-bal-label">Network</span><span class="dm-bal-val dm-bal-val--green" id="netStatus">Checking...</span></div>
+
+            <div class="dm-step" style="margin-top:var(--space-6);"><span class="dm-step__num">2</span><span class="dm-step__text">Send $SHADE to the casino address:</span></div>
+            <div class="dm-addr" id="casAddr">Loading...</div>
+            <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-4);">
+                <button class="btn btn-cyan btn-sm" id="copyBtn">Copy Address</button>
+                <span class="dm-copied" id="copyFeedback">Copied!</span>
+            </div>
+
+            <div class="dm-step"><span class="dm-step__num">3</span><span class="dm-step__text">Verify your deposit:</span></div>
+            <button class="btn-primary" id="verifyBtn">Verify Deposit</button>
+            <div class="dm-status" id="verifyStatus"></div>
+        </div>
+    </div>
+
+    <!-- Wallet Modal -->
+    <div class="modal-backdrop" id="walletModalBackdrop"></div>
+    <div class="modal" id="walletModal">
+        <div class="modal__header"><h3 class="modal__title">Connect Wallet</h3><button class="modal__close" id="closeWalletModal">&times;</button></div>
+        <p class="text-muted" style="font-size:var(--text-sm);padding:0 var(--space-4);">Connect to verify deposits -- no transaction signing needed.</p>
+        <div class="wallet-modal__options">
+            <div class="wallet-option" data-wallet="lace"><div class="wallet-option__icon"><span style="font-size:24px;">L</span></div><div class="wallet-option__info"><div class="wallet-option__name">Lace</div><div class="wallet-option__description">Cardano Wallet</div></div></div>
+            <div class="wallet-option" data-wallet="eternl"><div class="wallet-option__icon"><span style="font-size:24px;">E</span></div><div class="wallet-option__info"><div class="wallet-option__name">Eternl</div><div class="wallet-option__description">Advanced Cardano</div></div></div>
+            <div class="wallet-option" data-wallet="vespr"><div class="wallet-option__icon"><span style="font-size:24px;">V</span></div><div class="wallet-option__info"><div class="wallet-option__name">Vespr</div><div class="wallet-option__description">Mobile-First</div></div></div>
+        </div>
+    </div>
+
+    <script src="scripts/main.js"></script>
+    <script>
+        const API = SYNDICATE_API + '';
+
+        function waddr() { const w = window.ShadowSyndicate?.wallet(); return w?.connected ? w.address : null; }
+
+        async function load() {
+            try {
+                const r = await fetch(`${API}/deposit/info`);
+                const info = await r.json();
+                document.getElementById('casAddr').textContent = info.casino_wallet || 'Not configured';
+                document.getElementById('policyBadge').textContent = 'Policy: ' + info.shade_policy_id;
+                document.getElementById('netStatus').textContent = info.configured ? 'Mainnet Live' : 'Demo Mode';
+                document.getElementById('copyBtn').disabled = false;
+            } catch(e) {
+                document.getElementById('netStatus').textContent = 'Offline';
+                document.getElementById('casAddr').textContent = 'Server offline';
+            }
+        }
+
+        async function refresh() {
+            const a = waddr();
+            if (!a) { document.getElementById('walBal').textContent = '--'; return; }
+            try {
+                const r = await fetch(`${API}/wallet/balance/${encodeURIComponent(a)}`);
+                const d = await r.json();
+                document.getElementById('walBal').textContent = (d.shade_balance || 0).toLocaleString();
+            } catch(e) {}
+            try {
+                const r = await fetch(`${API}/session/${encodeURIComponent(a)}`);
+                const d = await r.json();
+                document.getElementById('casBal').textContent = (d.balance_shade || '0');
+            } catch(e) {}
+        }
+
+        document.getElementById('verifyBtn').addEventListener('click', async () => {
+            const a = waddr();
+            if (!a) { document.getElementById('walletModal').classList.add('active'); document.getElementById('walletModalBackdrop').classList.add('active'); return; }
+            const st = document.getElementById('verifyStatus');
+            st.innerHTML = '<span>Scanning blockchain...</span>';
+            try {
+                const r = await fetch(`${API}/deposit/verify/${encodeURIComponent(a)}`);
+                const d = await r.json();
+                if (d.new_deposits?.length > 0) {
+                    const total = d.new_deposits.reduce((s,x) => s + x.shade_amount, 0);
+                    st.innerHTML = '<span style="color:var(--state-success);">+'+total.toLocaleString()+' $SHADE credited!</span>';
+                } else {
+                    st.innerHTML = '<span style="color:var(--text-muted);">No new deposits. Send $SHADE then wait ~30s.</span>';
+                }
+                refresh();
+            } catch(e) { st.innerHTML = '<span style="color:var(--state-error);">Server offline</span>'; }
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            const a = document.getElementById('casAddr').textContent;
+            if (a) navigator.clipboard.writeText(a).then(() => {
+                const fb = document.getElementById('copyFeedback');
+                fb.classList.add('dm-copied--show');
+                setTimeout(() => fb.classList.remove('dm-copied--show'), 2000);
+            });
+        });
+
+        // Wallet modal now handled globally by main.js
+
+        window.addEventListener('wallet:connected', () => setTimeout(refresh, 500));
+        document.addEventListener('DOMContentLoaded', () => setTimeout(load, 200));
+    </script>
+</body>
+</html>
