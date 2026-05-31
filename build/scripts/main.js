@@ -121,18 +121,15 @@ class WalletManager {
     // Check if real wallet is available
     if (window.cardano && window.cardano[walletName]) {
       try {
-        console.log(`%c[WALLET] Connecting to ${walletName}...`, 'color: #00F0FF;');
 
         // PROMPT USER TO CONNECT
         this.api = await window.cardano[walletName].enable();
-        console.log('%c[WALLET] Connected! API obtained.', 'color: #39FF14;');
 
         this.connected = true;
         this.walletName = walletName;
 
         // Get real address from wallet
         this.address = await this.getWalletAddress();
-        console.log(`%c[WALLET] Address obtained: ${this.shortenAddress(this.address)}`, 'color: #39FF14;');
 
         // Load balance for THIS address
         await this.loadBalanceForAddress();
@@ -141,20 +138,45 @@ class WalletManager {
         this.updateUI();
 
         // Notify components
-        window.dispatchEvent(new CustomEvent('wallet:connected', { detail: { wallet: walletName, balance: this.balance, address: this.address, demoMode: false } }));
+        window.dispatchEvent(new CustomEvent('wallet:connected', { detail: { wallet: walletName, balance: this.balance, address: this.address } }));
 
         return true;
 
       } catch (err) {
-        console.error('[WALLET] Connection failed:', err);
-        if (!silent) alert('Connection refused by user or wallet error: ' + err.message);
+        // Wallet API became stale (common after page refresh) — reset and retry once
+        if (err.message && err.message.includes('shutdown')) {
+          this.api = null;
+          if (!silent) {
+            // Retry once after a short delay
+            await new Promise(r => setTimeout(r, 500));
+            try {
+              this.api = await window.cardano[walletName].enable();
+              this.connected = true;
+              this.walletName = walletName;
+              this.address = await this.getWalletAddress();
+              await this.loadBalanceForAddress();
+              this.saveState();
+              this.updateUI();
+              window.dispatchEvent(new CustomEvent('wallet:connected', { detail: { wallet: walletName, balance: this.balance, address: this.address } }));
+              return true;
+            } catch (retryErr) {
+              // Still failed — let user try manually
+            }
+          }
+        }
+        if (!silent) {
+          // User rejected or wallet error — don't show raw error, just a clean message
+          const msg = err.message && err.message.includes('refused') 
+            ? 'Wallet connection was cancelled. Click Connect to try again.'
+            : 'Wallet connection failed. Try refreshing the page.';
+          alert(msg);
+        }
         return false;
       }
     } else {
       // No wallet extension installed
-      console.log(`%c[WALLET] ${walletName} not found. Install Lace, Eternl, or Vespr to play with real ADA.`, 'color: #FFA500;');
       if (!silent) {
-        alert('No Cardano wallet detected. Please install Lace, Eternl, or Vespr browser extension to play with real ADA.');
+        alert('No Cardano wallet detected. Install Lace, Eternl, or Vespr to play with $SHADE.');
       }
       return false;
     }
@@ -178,7 +200,6 @@ class WalletManager {
         API.setWallet(this.address);
         const session = await API.getSession();
         this.balance = session.balance || session.balance_units || 0;
-        console.log(`%c[BALANCE] ${this.balance.toLocaleString()} $SHADE from server`, 'color: #39FF14;');
         this.updateUI();
         window.dispatchEvent(new CustomEvent('wallet:balanceUpdated', { detail: { balance: this.balance } }));
         return;
