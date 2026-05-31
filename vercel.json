@@ -1,0 +1,9 @@
+{
+  "buildCommand": "",
+  "outputDirectory": "build",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/games/:game", "destination": "/games/:game.html" }
+  ]
+}
