@@ -870,8 +870,11 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('%c"What happens in the dark, stays in the dark."', 'color: #00F0FF; font-style: italic;');
 });
 
-// Export for use in game modules
-window.ShadowSyndicate = {
+// Export for use in game modules.
+// IMPORTANT: preserve properties created by earlier scripts (fairness.js creates
+// window.ShadowSyndicate.Fairness before this file loads on game pages).
+window.ShadowSyndicate = window.ShadowSyndicate || {};
+Object.assign(window.ShadowSyndicate, {
   wallet: () => walletManager,
   modal: () => modalManager,
   proof: () => proofGenerator,
@@ -887,4 +890,4 @@ window.ShadowSyndicate = {
     localStorage.setItem('shadowSyndicate_stats', JSON.stringify(stats));
     return stats;
   }
-};
+});
